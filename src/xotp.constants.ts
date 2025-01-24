@@ -1,0 +1,1 @@
+export const XOTP_MODULE_OPTIONS = Symbol('XOTP_MODULE_OPTIONS');
