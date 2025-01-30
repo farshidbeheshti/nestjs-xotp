@@ -114,8 +114,8 @@ That options are applied to both TOTP and HOTP services.But you could also setmo
 
 ```javascript
 {
-  digit: 6,
-  hotp: {digit: 4}
+  digits: 6,
+  hotp: {digits: 4}
 }
 
 ## License
