@@ -117,10 +117,10 @@ That options are applied to both TOTP and HOTP services.But you could also setmo
   digits: 6,
   hotp: {digits: 4}
 }
+```
 
 ## License
 
 `nestjs-xotp` is [MIT licensed][project-license]
-```
 
-[project-license]: https://github.com/farshidbeheshti/xotp/blob/master/LICENSE
+[project-license]: https://github.com/farshidbeheshti/nestjs-xotp/blob/master/LICENSE
