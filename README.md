@@ -1,4 +1,4 @@
-<h1 style="text-align:center" >nestjs-xotp</h1>
+<h1 align="center">nestjs-xotp</h1>
 
 <p align="center">
   A <a href="https://github.com/nestjs/nest" rel="nofollow" >Nest</a> module wrapper for <a href="https://github.com/farshidbeheshti/xotp">XOTP</a>.
@@ -88,7 +88,7 @@ authenticate(userOTP: string): boolean {
 Example #3: Get the keyURI from which create a QR Code from, so that could be scanned by authenticator apps like Google Authenticator!
 
 ```typescript
-getKeyUri(userOTP: string): string {
+getKeyUri(): string {
   return this.xotpService.totp.keyUri({
     secret: this.xotpService.secret.from('A_STRONG_SECRET_KEY'),
     account: 'Nestjs-XOTP',
