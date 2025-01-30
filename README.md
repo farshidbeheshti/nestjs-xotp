@@ -120,5 +120,7 @@ That options are applied to both TOTP and HOTP services.But you could also setmo
 
 ## License
 
-`XOTP` is [MIT licensed][project-license]
+`nestjs-xotp` is [MIT licensed][project-license]
 ```
+
+[project-license]: https://github.com/farshidbeheshti/xotp/blob/master/LICENSE
