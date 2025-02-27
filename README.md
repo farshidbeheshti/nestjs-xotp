@@ -1,4 +1,4 @@
-<h1 align="center" >nestjs-xotp</h1>
+<h1 align="center">nestjs-xotp</h1>
 
 <p align="center">
   A <a href="https://github.com/nestjs/nest" rel="nofollow" >Nest</a> module wrapper for <a href="https://github.com/farshidbeheshti/xotp">XOTP</a>.
