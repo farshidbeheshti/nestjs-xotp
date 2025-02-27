@@ -4,30 +4,23 @@
   A <a href="https://github.com/nestjs/nest" rel="nofollow" >Nest</a> module wrapper for <a href="https://github.com/farshidbeheshti/xotp">XOTP</a>.
 </p>
 
-> [!CAUTION]
-> This repo is not yet fully production-ready, so I recommend not using it in a production environment.
-
 ## Installation
 
-Clone the nestjs-xotp repository to your desired local path and afterward navigate to your target project into where you're going install nestjs-xotp, then:
-
 ```bash
-npm install LOCAL_NESTJS_XOTP_REPOSITORY_PATH
+npm i xotp nestjs-xotp
 ```
-
-`LOCAL_NESTJS_XOTP_REPOSITORY_PATH` Is your local cloned repository of nestjs-xotp
 
 ## Usage
 
 Import `XOTPModule` into the root `AppModule` and use the `forRoot()` method to configure it!
-If you'd lile to config the module, see the [options](#options) section:
+See the [options](#options) section to see what options you can customize the module with!
 
 ```typescript
 import { Module } from '@nestjs/common';
 import { XOTPModule } from 'nestjs-xotp';
 
 @Module({
-  imports: [XOTPModule.forRoot(/* options, if any */)],
+  imports: [XOTPModule.forRoot(/* your options, if any */)],
 })
 export class AppModule {}
 ```
@@ -42,7 +35,7 @@ import { XOTPModule } from 'nestjs-xotp';
   imports: [
     XOTPModule.forRootAsync({
       useFactory: () => ({
-        // options, if any!
+        // your options, if any!
       }),
     }),
   ],
@@ -64,7 +57,7 @@ export class MyService {
 
 ## Example
 
-Example #1: Generate a OTP for user:
+Example #1: Generate a OTP for the user:
 
 ```typescript
 getOtp(): string {
@@ -110,7 +103,7 @@ Option is an optional object the same as original xotp [options](https://github.
 }
 ```
 
-That options are applied to both TOTP and HOTP services.But you could also setmore specific options for either/both of TOTP or HOTP. for example, you want to change the digit length of hotp token
+That options are applied to both TOTP and HOTP services.But you could also set more specific options for either/both of TOTP or HOTP. for example, you want to change the digit length of hotp token:
 
 ```javascript
 {
