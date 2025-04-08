@@ -1,9 +1,9 @@
 <h1 align="center">nestjs-xotp</h1>
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/8ef372d6-3cd7-4202-88b2-519f45f67160" width="240"  />
-  <img src="https://github.com/user-attachments/assets/ffa87094-83ab-4754-9550-82e3f922abea" width="125"  />
-  <img src="https://github.com/user-attachments/assets/32099c9a-7221-4008-a4bf-c1ada206878e" width="250" />
+  <a href="https://github.com/farshidbeheshti/xotp" ><img src="https://github.com/user-attachments/assets/8ef372d6-3cd7-4202-88b2-519f45f67160" width="120" /></a>
+  <img src="https://github.com/user-attachments/assets/ffa87094-83ab-4754-9550-82e3f922abea" width="70"  />
+  <a href="https://github.com/nestjs/nest" > <img src="https://github.com/user-attachments/assets/32099c9a-7221-4008-a4bf-c1ada206878e" width="125" /></a>
 </p>
 
 <p align="center">
