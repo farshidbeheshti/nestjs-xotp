@@ -2,8 +2,8 @@
 
 <p align="center">
   <a href="https://github.com/farshidbeheshti/xotp" ><img src="https://github.com/user-attachments/assets/8ef372d6-3cd7-4202-88b2-519f45f67160" width="120" /></a>
-  <img src="https://github.com/user-attachments/assets/ffa87094-83ab-4754-9550-82e3f922abea" width="70"  />
-  <a href="https://github.com/nestjs/nest" > <img src="https://github.com/user-attachments/assets/32099c9a-7221-4008-a4bf-c1ada206878e" width="125" /></a>
+  <img src="https://github.com/user-attachments/assets/4cd396f0-e6b1-4bfd-9a30-ded66c10f2d9" width="70"  />
+  <a href="https://github.com/nestjs/nest" > <img src="https://github.com/user-attachments/assets/b9848d88-74a6-4ded-9ba8-54769cf12330" width="125" /></a>
 </p>
 
 <p align="center">
