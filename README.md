@@ -1,6 +1,12 @@
 <h1 align="center">nestjs-xotp</h1>
 
 <p align="center">
+  <a href="https://github.com/farshidbeheshti/xotp" ><img src="https://github.com/user-attachments/assets/8ef372d6-3cd7-4202-88b2-519f45f67160" width="120" /></a>
+  <img src="https://github.com/user-attachments/assets/ffa87094-83ab-4754-9550-82e3f922abea" width="70"  />
+  <a href="https://github.com/nestjs/nest" > <img src="https://github.com/user-attachments/assets/32099c9a-7221-4008-a4bf-c1ada206878e" width="125" /></a>
+</p>
+
+<p align="center">
   A <a href="https://github.com/nestjs/nest" rel="nofollow" >Nest</a> module wrapper for <a href="https://github.com/farshidbeheshti/xotp">XOTP</a>.
 </p>
 
@@ -20,7 +26,11 @@ import { Module } from '@nestjs/common';
 import { XOTPModule } from 'nestjs-xotp';
 
 @Module({
-  imports: [XOTPModule.forRoot(/* your options, if any */)],
+  imports: [
+    XOTPModule.forRoot({
+      /* your options, if any */
+    }),
+  ],
 })
 export class AppModule {}
 ```
@@ -73,7 +83,7 @@ Example #2: To authenticate, verify the otp sent by the user.
 authenticate(userOTP: string): boolean {
   return this.xotpService.totp.validate({
     token: userOTP,
-    secret: this.xotpService.secret.from('your Secret Key'),
+    secret: this.xotpService.secret.from('YOUR_SECRET_KEY'),
   });
 }
 ```
@@ -93,22 +103,24 @@ getKeyUri(): string {
 
 Option is an optional object the same as original xotp [options](https://github.com/farshidbeheshti/xotp?tab=readme-ov-file#totp-options).
 
-```javascript
+```json
 {
-  digits: 6,
-  window: 1,
-  algorithm: 'sha1',
-  duration: 30,
-  issuer:'xotp'
+  "digits": 6,
+  "window": 1,
+  "algorithm": "sha1",
+  "duration": 30,
+  "issuer": "xotp"
 }
 ```
 
 That options are applied to both TOTP and HOTP services.But you could also set more specific options for either/both of TOTP or HOTP. for example, you want to change the digit length of hotp token:
 
-```javascript
+```json
 {
-  digits: 6,
-  hotp: {digits: 4}
+  "digits": 6,
+  "hotp": {
+    "digits": 4
+  }
 }
 ```
 
