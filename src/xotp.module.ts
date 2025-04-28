@@ -24,6 +24,7 @@ export class XOTPModule {
   public static forRootAsync(options: XOTPModuleAsyncOptions): DynamicModule {
     return {
       module: XOTPModule,
+      imports: options.imports,
       providers: createXOTPAsyncProviders(options),
     };
   }
