@@ -1,14 +1,18 @@
 <h1 align="center">nestjs-xotp</h1>
 
 <p align="center">
-  <a href="https://github.com/farshidbeheshti/xotp" ><img src="https://github.com/user-attachments/assets/8ef372d6-3cd7-4202-88b2-519f45f67160" width="120" /></a>
-  <img src="https://github.com/user-attachments/assets/4cd396f0-e6b1-4bfd-9a30-ded66c10f2d9" width="70"  />
-  <a href="https://github.com/nestjs/nest" > <img src="https://github.com/user-attachments/assets/b9848d88-74a6-4ded-9ba8-54769cf12330" width="125" /></a>
+  <a href="https://github.com/farshidbeheshti/xotp" ><img src="https://github.com/user-attachments/assets/8ef372d6-3cd7-4202-88b2-519f45f67160" width="180" alt="XOTP Logo" /></a>
+  <img src="https://github.com/user-attachments/assets/eb24514f-2298-46c5-bc70-ec69481c8a2c" width="120" alt="plus"  />
+  <a href="https://github.com/nestjs/nest"><img src="https://github.com/user-attachments/assets/b9848d88-74a6-4ded-9ba8-54769cf12330" width="190" alt="NestJS Logo" /></a>
 </p>
 
 <p align="center">
   A <a href="https://github.com/nestjs/nest" rel="nofollow" >Nest</a> module wrapper for <a href="https://github.com/farshidbeheshti/xotp">XOTP</a>.
 </p>
+
+## Overview
+
+`nestjs-xotp` provides a convenient way to use the XOTP library within your NestJS applications. It fully leverages NestJS's powerful dependency injection system, making it easy to manage, generate, and validate OTPs (Time-based One-Time Passwords - TOTP, and HMAC-based One-Time Passwords - HOTP) for robust security within your services.
 
 ## Installation
 
@@ -18,7 +22,7 @@ npm i xotp nestjs-xotp
 
 ## Usage
 
-Import `XOTPModule` into the root `AppModule` and use the `forRoot()` method to configure it!
+Integrate `XOTPModule` into your NestJS application by importing it into your `AppModule` and configuring it using the `forRoot()` method
 See the [options](#options) section to see what options you can customize the module with!
 
 ```typescript
@@ -28,14 +32,14 @@ import { XOTPModule } from 'nestjs-xotp';
 @Module({
   imports: [
     XOTPModule.forRoot({
-      /* your options, if any */
+      // Optional: Your XOTP configuration options go here
     }),
   ],
 })
 export class AppModule {}
 ```
 
-## Aync Config
+## Asynchronous Configuration
 
 ```typescript
 import { Module } from '@nestjs/common';
@@ -53,7 +57,7 @@ import { XOTPModule } from 'nestjs-xotp';
 export class AppModule {}
 ```
 
-Now, you're able to inject the service, like so:
+Once `XOTPModule` is configured, you can easily inject XOTPService into any of your NestJS services or controllers:
 
 ```typescript
 import { Injectable } from '@nestjs/common';
@@ -65,9 +69,13 @@ export class MyService {
 }
 ```
 
-## Example
+## Examples
 
-Example #1: Generate a OTP for the user:
+Here are some common ways to use the XOTPService for OTP operations:
+
+### Generating a TOTP
+
+Create a new Time-based One-Time Password:
 
 ```typescript
 getOtp(): string {
@@ -77,7 +85,9 @@ getOtp(): string {
 }
 ```
 
-Example #2: To authenticate, verify the otp sent by the user.
+### Verifying a TOTP
+
+Validate an OTP provided by a user:
 
 ```typescript
 authenticate(userOTP: string): boolean {
@@ -88,7 +98,9 @@ authenticate(userOTP: string): boolean {
 }
 ```
 
-Example #3: Get the keyURI from which create a QR Code from, so that could be scanned by authenticator apps like Google Authenticator!
+### Generating a Key URI
+
+Get the keyURI from which create a QR Code. Users can then scan the QR Code by authenticator apps like Google Authenticator!
 
 ```typescript
 getKeyUri(): string {
