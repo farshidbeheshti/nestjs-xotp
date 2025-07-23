@@ -22,8 +22,8 @@ npm i xotp nestjs-xotp
 
 ## Usage
 
-Integrate `XOTPModule` into your NestJS application by importing it into your `AppModule` and configuring it using the `forRoot()` method
-See the [options](#options) section to see what options you can customize the module with!
+Integrate `XOTPModule` into your NestJS application by importing it into your `AppModule` and configuring it using the `forRoot()` method.
+See the [options reference section](#options) for the options with which you can customize the module!
 
 ```typescript
 import { Module } from '@nestjs/common';
@@ -41,6 +41,8 @@ export class AppModule {}
 
 ## Asynchronous Configuration
 
+If your configuration depends on dynamic values, like environment variables or data from another module, use `forRootAsync()`:
+
 ```typescript
 import { Module } from '@nestjs/common';
 import { XOTPModule } from 'nestjs-xotp';
@@ -49,7 +51,7 @@ import { XOTPModule } from 'nestjs-xotp';
   imports: [
     XOTPModule.forRootAsync({
       useFactory: () => ({
-        // your options, if any!
+        // Your XOTP configuration options, dynamically provided
       }),
     }),
   ],
@@ -113,7 +115,7 @@ getKeyUri(): string {
 
 ## Options
 
-Option is an optional object the same as original xotp [options](https://github.com/farshidbeheshti/xotp?tab=readme-ov-file#totp-options).
+The nestjs-xotp module accepts an optional configuration object. These options mirror those available in the underlying XOTP library and apply globally to both TOTP and HOTP services. If you don't know what each one does, refer to the main [xotp options](https://github.com/farshidbeheshti/xotp?tab=readme-ov-file#totp-options)!
 
 ```json
 {
@@ -125,7 +127,9 @@ Option is an optional object the same as original xotp [options](https://github.
 }
 ```
 
-That options are applied to both TOTP and HOTP services.But you could also set more specific options for either/both of TOTP or HOTP. for example, you want to change the digit length of hotp token:
+### Overriding Specific Options for TOTP/OTP servioces
+
+You can set distinct options for TOTP or HOTP services individually. For instance, to change only the digit length for HOTP tokens:
 
 ```json
 {
