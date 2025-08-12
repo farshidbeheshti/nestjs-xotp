@@ -127,7 +127,7 @@ The nestjs-xotp module accepts an optional configuration object. These options m
 }
 ```
 
-### Overriding Specific Options for TOTP/OTP servioces
+### Overriding Specific Options for TOTP/OTP services
 
 You can set distinct options for TOTP or HOTP services individually. For instance, to change only the digit length for HOTP tokens:
 
