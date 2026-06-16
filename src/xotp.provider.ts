@@ -5,17 +5,27 @@ import { XOTP_MODULE_OPTIONS } from './xotp.constants';
 export function createXOTPAsyncProviders(
   options: XOTPModuleAsyncOptions,
 ): Provider[] {
-  const provider: Provider = {
+  const providers: Provider[] = [];
+
+  if (options.useClass) {
+    providers.push({
+      provide: options.useClass,
+      useClass: options.useClass,
+    });
+  }
+
+  const optionsProvider: Provider = {
     provide: XOTP_MODULE_OPTIONS,
     useFactory: options.useFactory,
     inject: options.inject || [],
   };
 
   if (options.useClass || options.useExisting) {
-    provider.useFactory = async (factory: XOTPOptionsFactory) =>
+    optionsProvider.useFactory = async (factory: XOTPOptionsFactory) =>
       factory.createXOTPModuleOptions();
-    provider.inject = [options.useClass || options.useExisting];
+    optionsProvider.inject = [options.useClass || options.useExisting];
   }
 
-  return [provider];
+  providers.push(optionsProvider);
+  return providers;
 }
