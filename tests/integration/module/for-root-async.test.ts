@@ -15,6 +15,11 @@ import {
 } from '../../fixtures/rfc-secrets';
 import { withForRootAsyncModule } from '../../support/xotp-testing-module';
 
+@Injectable()
+class ConfigService {
+  readonly totpDigits = 8;
+}
+
 describe('XOTPModule.forRootAsync', () => {
   it('loads options from useFactory', async () => {
     await withForRootAsyncModule(
@@ -86,6 +91,84 @@ describe('XOTPModule.forRootAsync', () => {
 
         expect(totp.generate({ secret, timestamp: RFC6238_TIMESTAMP_MS })).toBe(
           RFC6238_TOTP_SHA1,
+        );
+      },
+    );
+  });
+
+  it('loads options from useFactory with inject', async () => {
+    @Module({
+      providers: [ConfigService],
+      exports: [ConfigService],
+    })
+    class ConfigModule {}
+
+    await withForRootAsyncModule(
+      {
+        imports: [ConfigModule],
+        inject: [ConfigService],
+        useFactory: (config: ConfigService) => ({
+          totp: {
+            algorithm: 'sha1',
+            digits: config.totpDigits,
+            duration: 30,
+          },
+        }),
+      },
+      async (module) => {
+        const totp = module.get(XOTPTOTPService);
+        const secret = Secret.from(RFC6238_SECRET, 'ascii');
+
+        expect(totp.digits).toBe(8);
+        expect(totp.generate({ secret, timestamp: RFC6238_TIMESTAMP_MS })).toBe(
+          RFC6238_TOTP_SHA1,
+        );
+      },
+    );
+  });
+
+  it('loads options from async useFactory', async () => {
+    await withForRootAsyncModule(
+      {
+        useFactory: async () => {
+          await Promise.resolve();
+          return {
+            totp: { algorithm: 'sha1', digits: 8, duration: 30 },
+          };
+        },
+      },
+      async (module) => {
+        const totp = module.get(XOTPTOTPService);
+        const secret = Secret.from(RFC6238_SECRET, 'ascii');
+
+        expect(totp.generate({ secret, timestamp: RFC6238_TIMESTAMP_MS })).toBe(
+          RFC6238_TOTP_SHA1,
+        );
+      },
+    );
+  });
+
+  it('loads options from async factory class', async () => {
+    @Injectable()
+    class AsyncOptionsFactory implements XOTPOptionsFactory {
+      async createXOTPModuleOptions() {
+        await Promise.resolve();
+        return {
+          hotp: { algorithm: 'sha1', digits: 6 },
+        };
+      }
+    }
+
+    await withForRootAsyncModule(
+      {
+        useClass: AsyncOptionsFactory,
+      },
+      async (module) => {
+        const hotp = module.get(XOTPHOTPService);
+        const secret = Secret.from(RFC4226_SECRET, 'ascii');
+
+        expect(hotp.generate({ secret, counter: 0 })).toBe(
+          RFC4226_HOTP_COUNTER_0,
         );
       },
     );

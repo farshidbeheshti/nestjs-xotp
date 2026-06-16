@@ -1,4 +1,4 @@
-import { Secret } from 'xotp';
+import { Secret, URI } from 'xotp';
 import {
   XOTPService,
   XOTPHOTPService,
@@ -86,6 +86,120 @@ describe('XOTPModule.forRoot', () => {
     });
   });
 
+  describe('defaults', () => {
+    it('uses xotp defaults when no options are passed', async () => {
+      await withForRootModule(undefined, async (module) => {
+        const totp = module.get(XOTPTOTPService);
+        const hotp = module.get(XOTPHOTPService);
+        const secret = Secret.from(RFC6238_SECRET, 'ascii');
+        const token = totp.generate({
+          secret,
+          timestamp: RFC6238_TIMESTAMP_MS,
+        });
+
+        expect(totp.algorithm).toBe('sha1');
+        expect(totp.digits).toBe(6);
+        expect(totp.duration).toBe(30);
+        expect(totp.window).toBe(1);
+        expect(hotp.algorithm).toBe('sha1');
+        expect(hotp.digits).toBe(6);
+        expect(hotp.counter).toBe(0);
+        expect(hotp.window).toBe(1);
+        expect(totp.validate({ token, secret, timestamp: RFC6238_TIMESTAMP_MS })).toBe(
+          true,
+        );
+      });
+    });
+  });
+
+  describe('top-level module options', () => {
+    it('applies top-level issuer and account in toKeyUri', async () => {
+      const secret = Secret.from(RFC6238_SECRET, 'ascii');
+
+      await withForRootModule(
+        {
+          secret,
+          issuer: 'MyIssuer',
+          account: 'user@example.com',
+          totp: { algorithm: 'sha1', digits: 8, duration: 30 },
+        },
+        async (module) => {
+          const totp = module.get(XOTPTOTPService);
+          const parsed = URI.parse(totp.toKeyUri());
+
+          expect(parsed.type).toBe('totp');
+          expect(parsed.issuer).toBe('MyIssuer');
+          expect(parsed.account).toBe('user@example.com');
+        },
+      );
+    });
+
+    it('uses top-level counter as HOTP default', async () => {
+      await withForRootModule(
+        {
+          counter: 1,
+          hotp: { algorithm: 'sha1', digits: 6 },
+        },
+        async (module) => {
+          const hotp = module.get(XOTPHOTPService);
+          const secret = Secret.from(RFC4226_SECRET, 'ascii');
+
+          expect(hotp.counter).toBe(1);
+          expect(hotp.generate({ secret, counter: hotp.counter })).toBe(
+            RFC4226_HOTP_COUNTER_1,
+          );
+        },
+      );
+    });
+
+    it('uses top-level window for TOTP compare', async () => {
+      await withForRootModule(
+        {
+          window: 1,
+          totp: { algorithm: 'sha1', digits: 8, duration: 30 },
+        },
+        async (module) => {
+          const totp = module.get(XOTPTOTPService);
+          const secret = Secret.from(RFC6238_SECRET, 'ascii');
+          const token = totp.generate({
+            secret,
+            timestamp: RFC6238_TIMESTAMP_MS + 30 * 1000,
+          });
+
+          expect(
+            totp.compare({
+              token,
+              secret,
+              timestamp: RFC6238_TIMESTAMP_MS,
+            }),
+          ).toBe(1);
+        },
+      );
+    });
+
+    it('shares top-level secret between TOTP and HOTP', async () => {
+      const secret = Secret.from(RFC4226_SECRET, 'ascii');
+
+      await withForRootModule(
+        {
+          secret,
+          totp: { algorithm: 'sha1', digits: 8, duration: 30 },
+          hotp: { algorithm: 'sha1', digits: 6 },
+        },
+        async (module) => {
+          const { totp, hotp } = module.get(XOTPService);
+
+          expect(totp.secret).toEqual(secret);
+          expect(hotp.secret).toEqual(secret);
+          expect(totp.generate({ timestamp: RFC6238_TIMESTAMP_MS })).toBe(
+            RFC6238_TOTP_SHA1,
+          );
+          expect(hotp.generate({ counter: 0 })).toBe(RFC4226_HOTP_COUNTER_0);
+        },
+      );
+    });
+  });
+
   describe('instance secret', () => {
     it('supports generateSecret on TOTP', async () => {
       await withForRootModule(
@@ -122,6 +236,22 @@ describe('XOTPModule.forRoot', () => {
           expect(
             totp.validate({ token, timestamp: RFC6238_TIMESTAMP_MS }),
           ).toBe(true);
+        },
+      );
+    });
+
+    it('supports generateSecret on HOTP', async () => {
+      await withForRootModule(
+        {
+          generateSecret: true,
+          account: 'user@example.com',
+          hotp: { algorithm: 'sha1', digits: 6 },
+        },
+        async (module) => {
+          const hotp = module.get(XOTPHOTPService);
+
+          expect(hotp.secret).toBeDefined();
+          expect(typeof hotp.generate()).toBe('string');
         },
       );
     });

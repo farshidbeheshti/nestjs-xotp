@@ -61,4 +61,31 @@ describe('XOTPTOTPService operations', () => {
       },
     );
   });
+
+  it('compares tokens with equals', async () => {
+    await withForRootModule(
+      {
+        totp: { algorithm: 'sha1', digits: 8, duration: 30 },
+      },
+      async (module) => {
+        const totp = module.get(XOTPTOTPService);
+        const secret = Secret.from(RFC6238_SECRET, 'ascii');
+        const token = totp.generate({
+          secret,
+          timestamp: RFC6238_TIMESTAMP_MS,
+        });
+
+        expect(totp.equals({ token, secret, timestamp: RFC6238_TIMESTAMP_MS })).toBe(
+          true,
+        );
+        expect(
+          totp.equals({
+            token: '00000000',
+            secret,
+            timestamp: RFC6238_TIMESTAMP_MS,
+          }),
+        ).toBe(false);
+      },
+    );
+  });
 });
