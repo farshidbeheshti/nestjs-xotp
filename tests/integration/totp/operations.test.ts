@@ -2,8 +2,11 @@ import { Secret } from 'xotp';
 import { XOTPTOTPService } from '../../../src';
 import {
   RFC6238_SECRET,
+  RFC6238_SECRETS,
   RFC6238_TIMESTAMP_MS,
   RFC6238_TOTP_SHA1,
+  RFC6238_TOTP_SHA256,
+  RFC6238_TOTP_SHA512,
 } from '../../fixtures/rfc-secrets';
 import { withForRootModule } from '../../support/xotp-testing-module';
 
@@ -85,6 +88,48 @@ describe('XOTPTOTPService operations', () => {
             timestamp: RFC6238_TIMESTAMP_MS,
           }),
         ).toBe(false);
+      },
+    );
+  });
+
+  describe('time helpers', () => {
+    it('reports timeUsed and timeRemaining from module duration', async () => {
+      await withForRootModule(
+        {
+          totp: { algorithm: 'sha1', digits: 8, duration: 30 },
+        },
+        async (module) => {
+          const totp = module.get(XOTPTOTPService);
+
+          expect(totp.timeUsed({ timestamp: RFC6238_TIMESTAMP_MS })).toBe(29);
+          expect(
+            totp.timeRemaining({ timestamp: RFC6238_TIMESTAMP_MS }),
+          ).toBe(1);
+        },
+      );
+    });
+  });
+
+  describe('algorithms', () => {
+    it.each([
+      ['sha256', RFC6238_SECRETS.sha256, RFC6238_TOTP_SHA256],
+      ['sha512', RFC6238_SECRETS.sha512, RFC6238_TOTP_SHA512],
+    ] as const)(
+      'generates RFC 6238 TOTP with %s',
+      async (_algorithm, secretValue, expectedToken) => {
+        await withForRootModule(
+          {
+            totp: { algorithm: _algorithm, digits: 8, duration: 30 },
+          },
+          async (module) => {
+            const totp = module.get(XOTPTOTPService);
+            const secret = Secret.from(secretValue, 'ascii');
+
+            expect(
+              totp.generate({ secret, timestamp: RFC6238_TIMESTAMP_MS }),
+            ).toBe(expectedToken);
+          },
+        );
       },
     );
   });

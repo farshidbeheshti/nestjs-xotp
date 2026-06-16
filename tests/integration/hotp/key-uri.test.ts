@@ -26,4 +26,22 @@ describe('XOTPHOTPService key URI', () => {
       },
     );
   });
+
+  it('keeps deprecated keyUri aligned with toKeyUri', async () => {
+    const secret = Secret.from(RFC4226_SECRET, 'ascii');
+
+    await withForRootModule(
+      {
+        secret,
+        account: 'user@example.com',
+        issuer: 'TestIssuer',
+        hotp: { algorithm: 'sha1', digits: 6, counter: 4 },
+      },
+      async (module) => {
+        const hotp = module.get(XOTPHOTPService);
+
+        expect(hotp.keyUri()).toBe(hotp.toKeyUri());
+      },
+    );
+  });
 });

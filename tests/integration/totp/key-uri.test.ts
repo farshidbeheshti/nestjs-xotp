@@ -54,4 +54,22 @@ describe('XOTPTOTPService key URI', () => {
       },
     );
   });
+
+  it('keeps deprecated keyUri aligned with toKeyUri', async () => {
+    const secret = Secret.from(RFC6238_SECRET, 'ascii');
+
+    await withForRootModule(
+      {
+        secret,
+        account: 'user@example.com',
+        issuer: 'TestIssuer',
+        totp: { algorithm: 'sha1', digits: 8, duration: 30 },
+      },
+      async (module) => {
+        const totp = module.get(XOTPTOTPService);
+
+        expect(totp.keyUri()).toBe(totp.toKeyUri());
+      },
+    );
+  });
 });
