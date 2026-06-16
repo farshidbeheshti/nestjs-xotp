@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://github.com/farshidbeheshti/xotp" ><img src="https://github.com/user-attachments/assets/8ef372d6-3cd7-4202-88b2-519f45f67160" width="180" alt="XOTP Logo" /></a>
-  <img src="https://github.com/user-attachments/assets/eb24514f-2298-46c5-bc70-ec69481c8a2c" width="120" alt="plus"  />
+  <img src="https://github.com/user-attachments/assets/a5cf0746-9250-46fb-8b07-88e7b74ccbe9" width="120" alt="plus"  />
   <a href="https://github.com/nestjs/nest"><img src="https://github.com/user-attachments/assets/b9848d88-74a6-4ded-9ba8-54769cf12330" width="190" alt="NestJS Logo" /></a>
 </p>
 
