@@ -7,6 +7,7 @@ on:
 
 jobs:
   test:
+    name: Integration tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -19,8 +20,8 @@ jobs:
       - run: npm test
 
   smoke:
+    name: Dist smoke
     runs-on: ubuntu-latest
-    needs: test
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -32,8 +33,8 @@ jobs:
       - run: npm run test:smoke
 
   consumer:
+    name: Consumer smoke
     runs-on: ubuntu-latest
-    needs: test
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -43,3 +44,18 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm run test:smoke:consumer
+
+  required-checks:
+    name: Required checks
+    runs-on: ubuntu-latest
+    needs: [test, smoke, consumer]
+    if: always()
+    steps:
+      - name: Verify all jobs passed
+        run: |
+          if [ "${{ needs.test.result }}" != "success" ] || \
+             [ "${{ needs.smoke.result }}" != "success" ] || \
+             [ "${{ needs.consumer.result }}" != "success" ]; then
+            echo "One or more required checks failed or were cancelled."
+            exit 1
+          fi
