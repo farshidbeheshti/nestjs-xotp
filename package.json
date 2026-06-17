@@ -6,11 +6,18 @@
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist/",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
     "lint": "eslint src/**/*.ts",
     "test": "jest",
+    "test:smoke": "node tests/smoke/cjs.cjs",
+    "test:smoke:consumer": "node scripts/test-smoke-consumer.mjs",
     "prebuild": "rimraf dist/*",
-    "build": "nest build -p tsconfig.build.json"
+    "build": "tsc -p tsconfig.build.json"
   },
   "repository": {
     "type": "git",
