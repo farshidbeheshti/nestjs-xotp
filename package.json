@@ -14,6 +14,8 @@
   "scripts": {
     "lint": "eslint src/**/*.ts",
     "test": "jest",
+    "test:smoke": "node tests/smoke/cjs.cjs",
+    "test:smoke:consumer": "node scripts/test-smoke-consumer.mjs",
     "prebuild": "rimraf dist/*",
     "build": "tsc -p tsconfig.build.json"
   },

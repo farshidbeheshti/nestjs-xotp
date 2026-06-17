@@ -27,6 +27,8 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
+      - run: npm run test:smoke
+      - run: npm run test:smoke:consumer
 
       - name: Skip if version already on npm
         id: check
