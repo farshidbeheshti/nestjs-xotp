@@ -6,11 +6,16 @@
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist/",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
     "lint": "eslint src/**/*.ts",
     "test": "jest",
     "prebuild": "rimraf dist/*",
-    "build": "nest build -p tsconfig.build.json"
+    "build": "tsc -p tsconfig.build.json"
   },
   "repository": {
     "type": "git",
