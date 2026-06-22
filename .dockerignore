@@ -1,0 +1,9 @@
+.git
+.github
+node_modules
+dist
+coverage
+tests
+jest.config.js
+examples/**/node_modules
+examples/**/dist

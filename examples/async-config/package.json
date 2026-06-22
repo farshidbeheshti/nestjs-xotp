@@ -1,0 +1,23 @@
+{
+  "name": "nestjs-xotp-async-config-example",
+  "private": true,
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/main.js",
+    "start:dev": "ts-node src/main.ts"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/platform-express": "^11.0.0",
+    "nestjs-xotp": "file:../..",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "xotp": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  }
+}

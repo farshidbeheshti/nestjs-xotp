@@ -73,44 +73,60 @@ export class MyService {
 
 ## Examples
 
-Here are some common ways to use the XOTPService for OTP operations:
+Runnable NestJS apps live under [`examples/`](./examples/).
 
-### Generating a TOTP
+### Run with npm (recommended)
 
-Create a new Time-based One-Time Password:
+From the repository root:
+
+```bash
+npm run build
+cd examples/2fa-basic
+npm install
+npm run start
+```
+
+The app listens on `http://localhost:3000`. See [examples/2fa-basic/README.md](./examples/2fa-basic/README.md) for enroll and verify requests.
+
+| Example | Description |
+|---------|-------------|
+| [`2fa-basic`](./examples/2fa-basic) | TOTP enrollment and verification |
+| [`async-config`](./examples/async-config) | `forRootAsync` with environment-based options |
+
+Each example depends on the local package (`"nestjs-xotp": "file:../.."`), so run `npm run build` at the repo root before `npm install` inside an example.
+
+### Snippets
+
+Inject `XOTPTOTPService` (or `XOTPService`) and pass each user's secret per call:
 
 ```typescript
-getOtp(): string {
-  return this.xotpService.totp.generate({
-    secret: this.xotpService.secret.from('A_STRONG_SECRET_KEY'),
-  });
+import { Injectable } from '@nestjs/common';
+import { XOTPTOTPService } from 'nestjs-xotp';
+import { Secret } from 'xotp';
+
+@Injectable()
+export class AuthService {
+  constructor(private readonly totp: XOTPTOTPService) {}
+
+  verify(userSecretBase32: string, token: string): boolean {
+    return this.totp.validate({
+      secret: Secret.from(userSecretBase32, 'base32'),
+      token,
+    });
+  }
 }
 ```
 
-### Verifying a TOTP
-
-Validate an OTP provided by a user:
+For enrollment, create a bound instance and export the key URI:
 
 ```typescript
-authenticate(userOTP: string): boolean {
-  return this.xotpService.totp.validate({
-    token: userOTP,
-    secret: this.xotpService.secret.from('YOUR_SECRET_KEY'),
-  });
-}
-```
+const enrollment = XOTPTOTPService.create({
+  account: 'user@example.com',
+  issuer: 'MyApp',
+});
 
-### Generating a Key URI
-
-Get the keyURI from which create a QR Code. Users can then scan the QR Code by authenticator apps like Google Authenticator!
-
-```typescript
-getKeyUri(): string {
-  return this.xotpService.totp.keyUri({
-    secret: this.xotpService.secret.from('A_STRONG_SECRET_KEY'),
-    account: 'Nestjs-XOTP',
-  });
-}
+const secret = enrollment.secret!.toString(); // persist (base32)
+const keyUri = enrollment.toKeyUri(); // QR / authenticator setup
 ```
 
 ## Options

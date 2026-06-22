@@ -34,8 +34,6 @@ npm run start:dev
 
 The app listens on `http://localhost:3000`.
 
-**Alternative:** from the repository root, `docker compose -f examples/docker-compose.yml up 2fa-basic` (requires Docker).
-
 ## Try it
 
 Enroll an account:
