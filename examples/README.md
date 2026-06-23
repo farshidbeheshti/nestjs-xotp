@@ -21,3 +21,4 @@ Each example depends on the local package (`"nestjs-xotp": "file:../.."`), so bu
 |---------|-------------|
 | [2fa-basic](./2fa-basic) | TOTP enrollment and verification |
 | [async-config](./async-config) | `forRootAsync` with environment-based options |
+| [hotp-counter](./hotp-counter) | Counter-based HOTP generate and verify |

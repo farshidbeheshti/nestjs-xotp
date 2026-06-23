@@ -92,6 +92,7 @@ The app listens on `http://localhost:3000`. See [examples/2fa-basic/README.md](.
 |---------|-------------|
 | [`2fa-basic`](./examples/2fa-basic) | TOTP enrollment and verification |
 | [`async-config`](./examples/async-config) | `forRootAsync` with environment-based options |
+| [`hotp-counter`](./examples/hotp-counter) | Counter-based HOTP generate and verify |
 
 Each example depends on the local package (`"nestjs-xotp": "file:../.."`), so run `npm run build` at the repo root before `npm install` inside an example.
 
