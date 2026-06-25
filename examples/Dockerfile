@@ -1,8 +1,3 @@
-# Build context: repository root (see examples/docker-compose.yml)
-#
-# The library is packed with npm pack so examples install a tarball instead of
-# file:../.. (avoids separate peer-dependency wiring in the runner image).
-
 ARG EXAMPLE=2fa-basic
 
 FROM node:22-alpine AS builder
