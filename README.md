@@ -96,6 +96,40 @@ The app listens on `http://localhost:3000`. See [examples/2fa-basic/README.md](.
 
 Each example depends on the local package (`"nestjs-xotp": "file:../.."`), so run `npm run build` at the repo root before `npm install` inside an example.
 
+### Run with Docker Compose (optional)
+
+Requires [Docker](https://docs.docker.com/get-docker/). No local `npm install` or `npm run build` is needed — the image builds the library and example from source.
+
+From the repository root:
+
+```bash
+# Build and run one example (foreground)
+docker compose -f examples/docker-compose.yml up 2fa-basic
+
+# Build and run in the background
+docker compose -f examples/docker-compose.yml up -d 2fa-basic
+
+# Build images only
+docker compose -f examples/docker-compose.yml build
+
+# Stop containers
+docker compose -f examples/docker-compose.yml down
+```
+
+| Service | URL | Per-example docs |
+|---------|-----|------------------|
+| `2fa-basic` | http://localhost:3000 | [README](./examples/2fa-basic/README.md) |
+| `async-config` | http://localhost:3001 | [README](./examples/async-config/README.md) |
+| `hotp-counter` | http://localhost:3002 | [README](./examples/hotp-counter/README.md) |
+
+Run every example at once:
+
+```bash
+docker compose -f examples/docker-compose.yml up
+```
+
+npm is the primary workflow for development and copying code into your own app. See [examples/README.md](./examples/README.md) for more detail.
+
 ### Snippets
 
 Inject `XOTPTOTPService` (or `XOTPService`) and pass each user's secret per call:
