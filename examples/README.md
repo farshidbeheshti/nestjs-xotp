@@ -2,6 +2,8 @@
 
 Runnable NestJS apps that demonstrate `nestjs-xotp`.
 
+For copy-paste patterns without running an app, see the [Cookbook](../README.md#cookbook) section in the root README.
+
 ## Run with npm (recommended)
 
 From the repository root:

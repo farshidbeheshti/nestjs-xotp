@@ -14,6 +14,15 @@
 
 `nestjs-xotp` provides a convenient way to use the XOTP library within your NestJS applications. It fully leverages NestJS's powerful dependency injection system, making it easy to manage, generate, and validate OTPs (Time-based One-Time Passwords - TOTP, and HMAC-based One-Time Passwords - HOTP) for robust security within your services.
 
+## Table of contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Examples](#examples)
+- [Cookbook](#cookbook)
+- [Options](#options)
+- [License](#license)
+
 ## Installation
 
 ```bash
@@ -130,7 +139,11 @@ docker compose -f examples/docker-compose.yml up
 
 npm is the primary workflow for development and copying code into your own app. See [examples/README.md](./examples/README.md) for more detail.
 
-### Snippets
+## Cookbook
+
+Copy-paste patterns for common integrations. For runnable NestJS apps, see [Examples](#examples) above.
+
+### Verify a TOTP token
 
 Inject `XOTPTOTPService` (or `XOTPService`) and pass each user's secret per call:
 
@@ -151,6 +164,8 @@ export class AuthService {
   }
 }
 ```
+
+### Enroll a user (TOTP)
 
 For enrollment, create a bound instance and export the key URI:
 
