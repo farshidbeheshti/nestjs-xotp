@@ -52,6 +52,6 @@ npm is the primary workflow for development and copying code into your own app.
 
 | Example | Description |
 |---------|-------------|
-| [2fa-basic](./2fa-basic) | TOTP enrollment and verification |
+| [2fa-basic](./2fa-basic) | TOTP enrollment + replay-safe `verify()` |
 | [async-config](./async-config) | `forRootAsync` with environment-based options |
 | [hotp-counter](./hotp-counter) | Counter-based HOTP generate and verify |

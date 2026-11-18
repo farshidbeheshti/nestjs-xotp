@@ -1,12 +1,13 @@
 # async-config
 
-Load `nestjs-xotp` options from environment variables with `XOTPModule.forRootAsync()`.
+Load `nestjs-xotp` options from environment variables with `XOTPModule.forRootAsync()` (xotp v2).
 
 This example shows:
 
 - An `OtpConfigService` that implements `XOTPOptionsFactory`
 - `XOTPModule.forRootAsync({ imports, useExisting })` wiring
-- Reading TOTP settings from `process.env` at bootstrap
+- Reading TOTP settings from `process.env` at bootstrap (`Number(...)` — xotp rejects string env values)
+- Async `validate()` for token checks
 
 ## Run
 

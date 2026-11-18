@@ -1,7 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { XOTPTOTPService } from 'nestjs-xotp';
-import { Secret } from 'xotp';
 import { APP_ISSUER } from './two-factor.constants';
+
+type EnrollmentRecord = {
+  secret: string;
+  lastTimeStep: number | null;
+};
 
 export type EnrollResult = {
   account: string;
@@ -9,9 +13,13 @@ export type EnrollResult = {
   keyUri: string;
 };
 
+export type VerifyResult =
+  | { valid: true; timeStep: number; delta: number }
+  | { valid: false };
+
 @Injectable()
 export class TwoFactorService {
-  private readonly secrets = new Map<string, string>();
+  private readonly records = new Map<string, EnrollmentRecord>();
 
   constructor(private readonly totp: XOTPTOTPService) {}
 
@@ -24,33 +32,41 @@ export class TwoFactorService {
     const secret = enrollment.secret!.toString();
     const keyUri = enrollment.toKeyUri();
 
-    this.secrets.set(account, secret);
+    this.records.set(account, { secret, lastTimeStep: null });
 
     return { account, secret, keyUri };
   }
 
   getKeyUri(account: string): string {
-    const secret = this.getStoredSecret(account);
+    const { secret } = this.getRecord(account);
     return this.totp.toKeyUri({
-      secret: Secret.from(secret, 'base32'),
+      secret,
       account,
       issuer: APP_ISSUER,
     });
   }
 
-  verify(account: string, token: string): boolean {
-    const secret = this.getStoredSecret(account);
-    return this.totp.validate({
-      secret: Secret.from(secret, 'base32'),
+  async verify(account: string, token: string): Promise<VerifyResult> {
+    const record = this.getRecord(account);
+    const result = await this.totp.verify({
+      secret: record.secret,
       token,
+      afterTimeStep: record.lastTimeStep,
     });
+
+    if (result.valid) {
+      // Refuse this token (and older ones) on the next successful login.
+      record.lastTimeStep = result.timeStep;
+    }
+
+    return result;
   }
 
-  private getStoredSecret(account: string): string {
-    const secret = this.secrets.get(account);
-    if (!secret) {
+  private getRecord(account: string): EnrollmentRecord {
+    const record = this.records.get(account);
+    if (!record) {
       throw new NotFoundException(`No 2FA enrollment found for account: ${account}`);
     }
-    return secret;
+    return record;
   }
 }

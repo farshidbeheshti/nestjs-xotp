@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { XOTPTOTPService } from 'nestjs-xotp';
-import { Secret } from 'xotp';
+import type { OTPWindow } from 'xotp';
 
 export type OtpSettings = {
   issuer: string;
   algorithm: string;
   digits: number;
   duration: number;
-  window: number;
+  window: OTPWindow;
 };
 
 @Injectable()
@@ -24,9 +24,9 @@ export class OtpService {
     };
   }
 
-  verify(secretBase32: string, token: string): boolean {
+  async verify(secretBase32: string, token: string): Promise<boolean> {
     return this.totp.validate({
-      secret: Secret.from(secretBase32, 'base32'),
+      secret: secretBase32,
       token,
     });
   }

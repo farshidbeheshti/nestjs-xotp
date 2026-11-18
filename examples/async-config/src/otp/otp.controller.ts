@@ -12,8 +12,8 @@ export class OtpController {
   }
 
   @Post('verify')
-  verify(@Body() body: VerifyDto) {
-    const valid = this.otpService.verify(body.secret, body.token);
+  async verify(@Body() body: VerifyDto) {
+    const valid = await this.otpService.verify(body.secret, body.token);
     return { valid };
   }
 }

@@ -19,7 +19,6 @@ export class TwoFactorController {
 
   @Post('verify')
   verify(@Body() body: VerifyDto) {
-    const valid = this.twoFactorService.verify(body.account, body.token);
-    return { valid };
+    return this.twoFactorService.verify(body.account, body.token);
   }
 }

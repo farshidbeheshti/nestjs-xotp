@@ -25,9 +25,9 @@ describe('XOTPTOTPService key URI', () => {
         expect(imported.secret).toEqual(secret);
         expect(imported.account).toBe('user@example.com');
         expect(imported.issuer).toBe('TestIssuer');
-        expect(imported.generate({ timestamp: RFC6238_TIMESTAMP_MS })).toBe(
-          totp.generate({ timestamp: RFC6238_TIMESTAMP_MS }),
-        );
+        expect(
+          await imported.generate({ timestamp: RFC6238_TIMESTAMP_MS }),
+        ).toBe(await totp.generate({ timestamp: RFC6238_TIMESTAMP_MS }));
       },
     );
   });
@@ -46,11 +46,13 @@ describe('XOTPTOTPService key URI', () => {
         const imported = XOTPTOTPService.fromKeyUri(
           totp.toKeyUri({ account: 'user@example.com' }),
         );
-        const token = imported.generate({ timestamp: RFC6238_TIMESTAMP_MS });
+        const token = await imported.generate({
+          timestamp: RFC6238_TIMESTAMP_MS,
+        });
 
-        expect(imported.validate({ token, timestamp: RFC6238_TIMESTAMP_MS })).toBe(
-          true,
-        );
+        expect(
+          await imported.validate({ token, timestamp: RFC6238_TIMESTAMP_MS }),
+        ).toBe(true);
       },
     );
   });

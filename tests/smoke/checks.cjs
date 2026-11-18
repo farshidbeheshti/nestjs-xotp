@@ -21,7 +21,7 @@ async function runChecks({ XOTPModule, XOTPService }) {
   try {
     const xotpService = module.get(XOTPService);
     const secret = Secret.from(TOTP_SECRET, 'ascii');
-    const token = xotpService.totp.generate({
+    const token = await xotpService.totp.generate({
       secret,
       timestamp: TOTP_TIMESTAMP_MS,
     });
@@ -31,16 +31,16 @@ async function runChecks({ XOTPModule, XOTPService }) {
     }
 
     if (
-      !xotpService.totp.validate({
+      !(await xotpService.totp.validate({
         token,
         secret,
         timestamp: TOTP_TIMESTAMP_MS,
-      })
+      }))
     ) {
       throw new Error('TOTP validate failed');
     }
 
-    const hotpToken = xotpService.hotp.generate({ secret, counter: 0 });
+    const hotpToken = await xotpService.hotp.generate({ secret, counter: 0 });
 
     if (hotpToken !== HOTP_TOKEN) {
       throw new Error(`HOTP generate: expected ${HOTP_TOKEN}, got ${hotpToken}`);

@@ -24,18 +24,58 @@ describe('XOTPTOTPService operations', () => {
       async (module) => {
         const totp = module.get(XOTPTOTPService);
         const secret = Secret.from(RFC6238_SECRET, 'ascii');
-        const token = totp.generate({
+        const token = await totp.generate({
           secret,
           timestamp: RFC6238_TIMESTAMP_MS + 30 * 1000,
         });
 
         expect(
-          totp.compare({
+          await totp.compare({
             token,
             secret,
             timestamp: RFC6238_TIMESTAMP_MS,
           }),
         ).toBe(1);
+      },
+    );
+  });
+
+  it('accepts asymmetric window for past steps only', async () => {
+    await withForRootModule(
+      {
+        totp: {
+          algorithm: 'sha1',
+          digits: 8,
+          duration: 30,
+          window: { backward: 1, forward: 0 },
+        },
+      },
+      async (module) => {
+        const totp = module.get(XOTPTOTPService);
+        const secret = Secret.from(RFC6238_SECRET, 'ascii');
+        const pastToken = await totp.generate({
+          secret,
+          timestamp: RFC6238_TIMESTAMP_MS - 30 * 1000,
+        });
+        const futureToken = await totp.generate({
+          secret,
+          timestamp: RFC6238_TIMESTAMP_MS + 30 * 1000,
+        });
+
+        expect(
+          await totp.compare({
+            token: pastToken,
+            secret,
+            timestamp: RFC6238_TIMESTAMP_MS,
+          }),
+        ).toBe(-1);
+        expect(
+          await totp.compare({
+            token: futureToken,
+            secret,
+            timestamp: RFC6238_TIMESTAMP_MS,
+          }),
+        ).toBeNull();
       },
     );
   });
@@ -48,14 +88,14 @@ describe('XOTPTOTPService operations', () => {
       async (module) => {
         const totp = module.get(XOTPTOTPService);
         const secret = Secret.from(RFC6238_SECRET, 'ascii');
-        const token = totp.generate({
+        const token = await totp.generate({
           secret,
           timestamp: RFC6238_TIMESTAMP_MS,
         });
 
         expect(token).toBe(RFC6238_TOTP_SHA1);
         expect(
-          totp.compare({
+          await totp.compare({
             token,
             secret,
             timestamp: RFC6238_TIMESTAMP_MS,
@@ -73,21 +113,56 @@ describe('XOTPTOTPService operations', () => {
       async (module) => {
         const totp = module.get(XOTPTOTPService);
         const secret = Secret.from(RFC6238_SECRET, 'ascii');
-        const token = totp.generate({
+        const token = await totp.generate({
           secret,
           timestamp: RFC6238_TIMESTAMP_MS,
         });
 
-        expect(totp.equals({ token, secret, timestamp: RFC6238_TIMESTAMP_MS })).toBe(
-          true,
-        );
         expect(
-          totp.equals({
+          await totp.equals({ token, secret, timestamp: RFC6238_TIMESTAMP_MS }),
+        ).toBe(true);
+        expect(
+          await totp.equals({
             token: '00000000',
             secret,
             timestamp: RFC6238_TIMESTAMP_MS,
           }),
         ).toBe(false);
+      },
+    );
+  });
+
+  it('rejects replayed tokens with verify and afterTimeStep', async () => {
+    await withForRootModule(
+      {
+        totp: { algorithm: 'sha1', digits: 8, duration: 30, window: 1 },
+      },
+      async (module) => {
+        const totp = module.get(XOTPTOTPService);
+        const secret = Secret.from(RFC6238_SECRET, 'ascii');
+        const token = await totp.generate({
+          secret,
+          timestamp: RFC6238_TIMESTAMP_MS,
+        });
+
+        const first = await totp.verify({
+          secret,
+          token,
+          timestamp: RFC6238_TIMESTAMP_MS,
+        });
+        expect(first).toEqual({
+          valid: true,
+          timeStep: 1,
+          delta: 0,
+        });
+
+        const replay = await totp.verify({
+          secret,
+          token,
+          timestamp: RFC6238_TIMESTAMP_MS,
+          afterTimeStep: first.valid ? first.timeStep : null,
+        });
+        expect(replay).toEqual({ valid: false });
       },
     );
   });
@@ -126,7 +201,7 @@ describe('XOTPTOTPService operations', () => {
             const secret = Secret.from(secretValue, 'ascii');
 
             expect(
-              totp.generate({ secret, timestamp: RFC6238_TIMESTAMP_MS }),
+              await totp.generate({ secret, timestamp: RFC6238_TIMESTAMP_MS }),
             ).toBe(expectedToken);
           },
         );

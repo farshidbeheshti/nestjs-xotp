@@ -22,7 +22,9 @@ describe('XOTPHOTPService key URI', () => {
         expect(imported.secret).toEqual(secret);
         expect(imported.account).toBe('user@example.com');
         expect(imported.issuer).toBe('TestIssuer');
-        expect(imported.generate({ counter: 4 })).toBe(hotp.generate({ counter: 4 }));
+        expect(await imported.generate({ counter: 4 })).toBe(
+          await hotp.generate({ counter: 4 }),
+        );
       },
     );
   });
