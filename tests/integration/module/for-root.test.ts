@@ -53,14 +53,18 @@ describe('XOTPModule.forRoot', () => {
         async (module) => {
           const { totp } = module.get(XOTPService);
           const secret = Secret.from(RFC6238_SECRET, 'ascii');
-          const token = totp.generate({
+          const token = await totp.generate({
             secret,
             timestamp: RFC6238_TIMESTAMP_MS,
           });
 
           expect(token).toBe(RFC6238_TOTP_SHA1);
           expect(
-            totp.validate({ token, secret, timestamp: RFC6238_TIMESTAMP_MS }),
+            await totp.validate({
+              token,
+              secret,
+              timestamp: RFC6238_TIMESTAMP_MS,
+            }),
           ).toBe(true);
         },
       );
@@ -75,10 +79,10 @@ describe('XOTPModule.forRoot', () => {
           const { hotp } = module.get(XOTPService);
           const secret = Secret.from(RFC4226_SECRET, 'ascii');
 
-          expect(hotp.generate({ secret, counter: 0 })).toBe(
+          expect(await hotp.generate({ secret, counter: 0 })).toBe(
             RFC4226_HOTP_COUNTER_0,
           );
-          expect(hotp.generate({ secret, counter: 1 })).toBe(
+          expect(await hotp.generate({ secret, counter: 1 })).toBe(
             RFC4226_HOTP_COUNTER_1,
           );
         },
@@ -92,7 +96,7 @@ describe('XOTPModule.forRoot', () => {
         const totp = module.get(XOTPTOTPService);
         const hotp = module.get(XOTPHOTPService);
         const secret = Secret.from(RFC6238_SECRET, 'ascii');
-        const token = totp.generate({
+        const token = await totp.generate({
           secret,
           timestamp: RFC6238_TIMESTAMP_MS,
         });
@@ -105,9 +109,13 @@ describe('XOTPModule.forRoot', () => {
         expect(hotp.digits).toBe(6);
         expect(hotp.counter).toBe(0);
         expect(hotp.window).toBe(1);
-        expect(totp.validate({ token, secret, timestamp: RFC6238_TIMESTAMP_MS })).toBe(
-          true,
-        );
+        expect(
+          await totp.validate({
+            token,
+            secret,
+            timestamp: RFC6238_TIMESTAMP_MS,
+          }),
+        ).toBe(true);
       });
     });
   });
@@ -145,9 +153,9 @@ describe('XOTPModule.forRoot', () => {
           const secret = Secret.from(RFC4226_SECRET, 'ascii');
 
           expect(hotp.counter).toBe(1);
-          expect(hotp.generate({ secret, counter: hotp.counter })).toBe(
-            RFC4226_HOTP_COUNTER_1,
-          );
+          expect(
+            await hotp.generate({ secret, counter: hotp.counter }),
+          ).toBe(RFC4226_HOTP_COUNTER_1);
         },
       );
     });
@@ -161,13 +169,13 @@ describe('XOTPModule.forRoot', () => {
         async (module) => {
           const totp = module.get(XOTPTOTPService);
           const secret = Secret.from(RFC6238_SECRET, 'ascii');
-          const token = totp.generate({
+          const token = await totp.generate({
             secret,
             timestamp: RFC6238_TIMESTAMP_MS + 30 * 1000,
           });
 
           expect(
-            totp.compare({
+            await totp.compare({
               token,
               secret,
               timestamp: RFC6238_TIMESTAMP_MS,
@@ -191,10 +199,12 @@ describe('XOTPModule.forRoot', () => {
 
           expect(totp.secret).toEqual(secret);
           expect(hotp.secret).toEqual(secret);
-          expect(totp.generate({ timestamp: RFC6238_TIMESTAMP_MS })).toBe(
+          expect(await totp.generate({ timestamp: RFC6238_TIMESTAMP_MS })).toBe(
             RFC6238_TOTP_SHA1,
           );
-          expect(hotp.generate({ counter: 0 })).toBe(RFC4226_HOTP_COUNTER_0);
+          expect(await hotp.generate({ counter: 0 })).toBe(
+            RFC4226_HOTP_COUNTER_0,
+          );
         },
       );
     });
@@ -212,7 +222,7 @@ describe('XOTPModule.forRoot', () => {
           const totp = module.get(XOTPTOTPService);
 
           expect(totp.secret).toBeDefined();
-          expect(typeof totp.generate()).toBe('string');
+          expect(typeof (await totp.generate())).toBe('string');
         },
       );
     });
@@ -230,11 +240,13 @@ describe('XOTPModule.forRoot', () => {
 
           expect(totp.secret).toEqual(secret);
 
-          const token = totp.generate({ timestamp: RFC6238_TIMESTAMP_MS });
+          const token = await totp.generate({
+            timestamp: RFC6238_TIMESTAMP_MS,
+          });
 
           expect(token).toBe(RFC6238_TOTP_SHA1);
           expect(
-            totp.validate({ token, timestamp: RFC6238_TIMESTAMP_MS }),
+            await totp.validate({ token, timestamp: RFC6238_TIMESTAMP_MS }),
           ).toBe(true);
         },
       );
@@ -251,7 +263,7 @@ describe('XOTPModule.forRoot', () => {
           const hotp = module.get(XOTPHOTPService);
 
           expect(hotp.secret).toBeDefined();
-          expect(typeof hotp.generate()).toBe('string');
+          expect(typeof (await hotp.generate())).toBe('string');
         },
       );
     });

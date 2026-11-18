@@ -15,10 +15,10 @@ describe('XOTPHOTPService operations', () => {
       async (module) => {
         const hotp = module.get(XOTPHOTPService);
         const secret = Secret.from(RFC4226_SECRET, 'ascii');
-        const token = hotp.generate({ secret, counter: 0 });
+        const token = await hotp.generate({ secret, counter: 0 });
 
         expect(token).toBe(RFC4226_HOTP_COUNTER_0);
-        expect(hotp.validate({ token, secret, counter: 0 })).toBe(true);
+        expect(await hotp.validate({ token, secret, counter: 0 })).toBe(true);
       },
     );
   });
@@ -31,15 +31,36 @@ describe('XOTPHOTPService operations', () => {
       async (module) => {
         const hotp = module.get(XOTPHOTPService);
         const secret = Secret.from(RFC4226_SECRET, 'ascii');
-        const token = hotp.generate({ secret, counter: 1 });
+        const token = await hotp.generate({ secret, counter: 1 });
 
         expect(
-          hotp.compare({
+          await hotp.compare({
             token,
             secret,
             counter: 0,
           }),
         ).toBe(1);
+      },
+    );
+  });
+
+  it('does not accept earlier counters with a numeric HOTP window', async () => {
+    await withForRootModule(
+      {
+        hotp: { algorithm: 'sha1', digits: 6, window: 1 },
+      },
+      async (module) => {
+        const hotp = module.get(XOTPHOTPService);
+        const secret = Secret.from(RFC4226_SECRET, 'ascii');
+        const token = await hotp.generate({ secret, counter: 0 });
+
+        expect(
+          await hotp.compare({
+            token,
+            secret,
+            counter: 1,
+          }),
+        ).toBeNull();
       },
     );
   });
@@ -52,10 +73,12 @@ describe('XOTPHOTPService operations', () => {
       async (module) => {
         const hotp = module.get(XOTPHOTPService);
         const secret = Secret.from(RFC4226_SECRET, 'ascii');
-        const token = hotp.generate({ secret, counter: 0 });
+        const token = await hotp.generate({ secret, counter: 0 });
 
-        expect(hotp.equals({ token, secret, counter: 0 })).toBe(true);
-        expect(hotp.equals({ token: '000000', secret, counter: 0 })).toBe(false);
+        expect(await hotp.equals({ token, secret, counter: 0 })).toBe(true);
+        expect(
+          await hotp.equals({ token: '000000', secret, counter: 0 }),
+        ).toBe(false);
       },
     );
   });

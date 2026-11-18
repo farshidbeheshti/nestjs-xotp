@@ -1,20 +1,22 @@
 # hotp-counter
 
-Counter-based HOTP enrollment and verification with `nestjs-xotp`.
+Counter-based HOTP enrollment and verification with `nestjs-xotp` (xotp v2).
 
 This example shows:
 
 - **Enrollment** — `XOTPHOTPService.create()` generates a per-user secret and `otpauth://` URI.
-- **Verification** — a shared injected `XOTPHOTPService` validates tokens at the stored counter.
+- **Verification** — a shared injected `XOTPHOTPService` awaits `validate()` at the stored counter.
 - **Counter persistence** — the server increments the counter after each successful verification (in memory).
 
 Secrets and counters are kept in memory only. In production, persist them in your database.
+
+A numeric HOTP `window` only looks **ahead** (never earlier counters). Use `window: { backward, forward }` only if you intentionally accept older counters.
 
 ## How it works
 
 - `HotpModule` imports `XOTPModule.forRoot()` with HOTP-specific options.
 - Each account has a `{ secret, counter }` record starting at counter `0`.
-- `POST /hotp/verify` checks the token at the current counter; on success, the counter advances by one.
+- `POST /hotp/verify` awaits validation at the current counter; on success, the counter advances by one.
 
 ## Run
 

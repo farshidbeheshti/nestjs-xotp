@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { XOTPHOTPService } from 'nestjs-xotp';
-import { Secret } from 'xotp';
 import { APP_ISSUER } from './hotp.constants';
 
 type HotpRecord = {
@@ -45,11 +44,10 @@ export class HotpService {
     return this.getRecord(account).counter;
   }
 
-  verify(account: string, token: string): VerifyResult {
+  async verify(account: string, token: string): Promise<VerifyResult> {
     const record = this.getRecord(account);
-    const secret = Secret.from(record.secret, 'base32');
-    const valid = this.hotp.validate({
-      secret,
+    const valid = await this.hotp.validate({
+      secret: record.secret,
       token,
       counter: record.counter,
     });

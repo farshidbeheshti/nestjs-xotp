@@ -14,6 +14,11 @@
 
 `nestjs-xotp` provides a convenient way to use the XOTP library within your NestJS applications. It fully leverages NestJS's powerful dependency injection system, making it easy to manage, generate, and validate OTPs (Time-based One-Time Passwords - TOTP, and HMAC-based One-Time Passwords - HOTP) for robust security within your services.
 
+Requires **Node.js 20+** and peer dependency **[xotp](https://github.com/farshidbeheshti/xotp) v2** (async Web Crypto API).
+
+> [!IMPORTANT]
+> **xotp v2 is async.** `await` `generate`, `validate`, `compare`, `equals`, and `verify`. See [Migrating from v1](https://github.com/farshidbeheshti/xotp#migrating-from-v1).
+
 ## Table of contents
 
 - [Installation](#installation)
@@ -99,7 +104,7 @@ The app listens on `http://localhost:3000`. See [examples/2fa-basic/README.md](.
 
 | Example | Description |
 |---------|-------------|
-| [`2fa-basic`](./examples/2fa-basic) | TOTP enrollment and verification |
+| [`2fa-basic`](./examples/2fa-basic) | TOTP enrollment + replay-safe `verify()` |
 | [`async-config`](./examples/async-config) | `forRootAsync` with environment-based options |
 | [`hotp-counter`](./examples/hotp-counter) | Counter-based HOTP generate and verify |
 
@@ -143,24 +148,34 @@ npm is the primary workflow for development and copying code into your own app. 
 
 Copy-paste patterns for common integrations. For runnable NestJS apps, see [Examples](#examples) above.
 
-### Verify a TOTP token
+### Verify a TOTP token (replay-safe)
 
-Inject `XOTPTOTPService` (or `XOTPService`) and pass each user's secret per call:
+Prefer `verify()` over `validate()` for login 2FA. Pass each user's secret per call and persist `timeStep` after success:
 
 ```typescript
 import { Injectable } from '@nestjs/common';
 import { XOTPTOTPService } from 'nestjs-xotp';
-import { Secret } from 'xotp';
 
 @Injectable()
 export class AuthService {
   constructor(private readonly totp: XOTPTOTPService) {}
 
-  verify(userSecretBase32: string, token: string): boolean {
-    return this.totp.validate({
-      secret: Secret.from(userSecretBase32, 'base32'),
+  async verify(
+    userSecretBase32: string,
+    token: string,
+    afterTimeStep?: number | null,
+  ) {
+    const result = await this.totp.verify({
+      secret: userSecretBase32, // Base32 string is accepted in xotp v2
       token,
+      afterTimeStep,
     });
+
+    if (result.valid) {
+      // Persist result.timeStep (conditional update) for the next login
+    }
+
+    return result; // { valid: true, timeStep, delta } | { valid: false }
   }
 }
 ```
@@ -192,6 +207,8 @@ The nestjs-xotp module accepts an optional configuration object. These options m
   "issuer": "xotp"
 }
 ```
+
+`window` may also be asymmetric: `{ "backward": 1, "forward": 0 }`. Convert env vars with `Number(...)` — xotp rejects string values such as `"30"`.
 
 ### Overriding Specific Options for TOTP/OTP servioces
 

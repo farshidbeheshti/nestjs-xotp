@@ -11,7 +11,7 @@ import {
 class ConsumerService {
   constructor(private readonly xotpService: XOTPService) {}
 
-  generateHotp() {
+  async generateHotp() {
     const secret = Secret.from(RFC4226_SECRET, 'ascii');
     return this.xotpService.hotp.generate({ secret, counter: 0 });
   }
@@ -34,7 +34,7 @@ describe('XOTPModule exports', () => {
     }).compile();
 
     try {
-      expect(module.get(ConsumerService).generateHotp()).toBe(
+      expect(await module.get(ConsumerService).generateHotp()).toBe(
         RFC4226_HOTP_COUNTER_0,
       );
     } finally {
