@@ -38,6 +38,7 @@ describe('XOTPModule.forRoot', () => {
       expect(xotpService.totp).toBeInstanceOf(XOTPTOTPService);
       expect(xotpService.hotp).toBeInstanceOf(XOTPHOTPService);
       expect(xotpService.secret).toBe(Secret);
+      expect(xotpService.uri).toBe(URI);
       expect(module.get(XOTPTOTPService)).toBe(xotpService.totp);
       expect(module.get(XOTPHOTPService)).toBe(xotpService.hotp);
     });

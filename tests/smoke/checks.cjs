@@ -7,7 +7,7 @@ async function runChecks({ XOTPModule, XOTPService }) {
   require('reflect-metadata');
 
   const { Test } = require('@nestjs/testing');
-  const { Secret } = require('xotp');
+  const { Secret, URI } = require('xotp');
 
   const module = await Test.createTestingModule({
     imports: [
@@ -20,6 +20,11 @@ async function runChecks({ XOTPModule, XOTPService }) {
 
   try {
     const xotpService = module.get(XOTPService);
+
+    if (xotpService.uri !== URI) {
+      throw new Error('XOTPService.uri does not match xotp URI');
+    }
+
     const secret = Secret.from(TOTP_SECRET, 'ascii');
     const token = await xotpService.totp.generate({
       secret,
