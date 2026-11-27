@@ -128,6 +128,31 @@ describe('XotpModule.forRootAsync', () => {
     );
   });
 
+  it('resolves useFactory inject from extraProviders', async () => {
+    await withForRootAsyncModule(
+      {
+        extraProviders: [ConfigService],
+        inject: [ConfigService],
+        useFactory: (config: ConfigService): XotpModuleOptions => ({
+          totp: {
+            algorithm: 'sha1',
+            digits: config.totpDigits,
+            duration: 30,
+          },
+        }),
+      },
+      async (module) => {
+        const totp = module.get(XotpTotpService);
+        const secret = Secret.from(RFC6238_SECRET, 'ascii');
+
+        expect(totp.digits).toBe(8);
+        expect(
+          await totp.generate({ secret, timestamp: RFC6238_TIMESTAMP_MS }),
+        ).toBe(RFC6238_TOTP_SHA1);
+      },
+    );
+  });
+
   it('loads options from async useFactory', async () => {
     await withForRootAsyncModule(
       {

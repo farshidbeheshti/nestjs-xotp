@@ -27,7 +27,10 @@ export class XotpModule {
       global: options.global,
       module: XotpModule,
       imports: options.imports,
-      providers: createXOTPAsyncProviders(options),
+      providers: [
+        ...createXOTPAsyncProviders(options),
+        ...(options.extraProviders ?? []),
+      ],
     };
   }
 }

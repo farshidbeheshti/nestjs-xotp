@@ -1,4 +1,4 @@
-import { ModuleMetadata, Type } from '@nestjs/common';
+import { ModuleMetadata, Provider, Type } from '@nestjs/common';
 import { HOTPOptions, TOTPOptions } from 'xotp';
 
 export type XotpModuleOptions = Partial<TOTPOptions> &
@@ -7,7 +7,6 @@ export type XotpModuleOptions = Partial<TOTPOptions> &
   };
 
 export type XotpForRootOptions = XotpModuleOptions & {
-  /** Register the module globally so it need not be imported elsewhere. */
   global?: boolean;
 };
 
@@ -23,6 +22,6 @@ export interface XotpModuleAsyncOptions
     ...args: any[]
   ) => Promise<XotpModuleOptions> | XotpModuleOptions;
   inject?: any[];
-  /** Register the module globally so it need not be imported elsewhere. */
+  extraProviders?: Provider[];
   global?: boolean;
 }
