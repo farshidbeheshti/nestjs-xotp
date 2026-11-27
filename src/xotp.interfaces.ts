@@ -6,6 +6,11 @@ export type XOTPModuleOptions = Partial<TOTPOptions> &
     totp?: Partial<TOTPOptions>;
   };
 
+export type XOTPForRootOptions = XOTPModuleOptions & {
+  /** Register the module globally so it need not be imported elsewhere. */
+  global?: boolean;
+};
+
 export interface XOTPOptionsFactory {
   createXOTPModuleOptions(): XOTPModuleOptions | Promise<XOTPModuleOptions>;
 }
@@ -18,4 +23,6 @@ export interface XOTPModuleAsyncOptions
     ...args: any[]
   ) => Promise<XOTPModuleOptions> | XOTPModuleOptions;
   inject?: any[];
+  /** Register the module globally so it need not be imported elsewhere. */
+  global?: boolean;
 }
