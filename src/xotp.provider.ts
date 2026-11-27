@@ -1,9 +1,9 @@
 import { Provider } from '@nestjs/common';
-import { XOTPModuleAsyncOptions, XOTPOptionsFactory } from './xotp.interfaces';
+import { XotpModuleAsyncOptions, XotpOptionsFactory } from './xotp.interfaces';
 import { XOTP_MODULE_OPTIONS } from './xotp.constants';
 
 export function createXOTPAsyncProviders(
-  options: XOTPModuleAsyncOptions,
+  options: XotpModuleAsyncOptions,
 ): Provider[] {
   const providers: Provider[] = [];
 
@@ -21,7 +21,7 @@ export function createXOTPAsyncProviders(
   };
 
   if (options.useClass || options.useExisting) {
-    optionsProvider.useFactory = async (factory: XOTPOptionsFactory) =>
+    optionsProvider.useFactory = async (factory: XotpOptionsFactory) =>
       factory.createXOTPModuleOptions();
     optionsProvider.inject = [options.useClass || options.useExisting];
   }

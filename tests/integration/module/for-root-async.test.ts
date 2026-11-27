@@ -1,8 +1,8 @@
 import { Injectable, Module } from '@nestjs/common';
 import { Secret } from 'xotp';
 import {
-  XOTPModuleOptions,
-  XOTPOptionsFactory,
+  XotpModuleOptions,
+  XotpOptionsFactory,
   XotpService,
   XotpHotpService,
   XotpTotpService,
@@ -25,7 +25,7 @@ describe('XotpModule.forRootAsync', () => {
   it('loads options from useFactory', async () => {
     await withForRootAsyncModule(
       {
-        useFactory: (): XOTPModuleOptions => ({
+        useFactory: (): XotpModuleOptions => ({
           totp: { algorithm: 'sha1', digits: 8, duration: 30 },
         }),
       },
@@ -42,8 +42,8 @@ describe('XotpModule.forRootAsync', () => {
 
   it('loads options from useExisting factory', async () => {
     @Injectable()
-    class TestOptionsFactory implements XOTPOptionsFactory {
-      createXOTPModuleOptions(): XOTPModuleOptions {
+    class TestOptionsFactory implements XotpOptionsFactory {
+      createXOTPModuleOptions(): XotpModuleOptions {
         return {
           hotp: { algorithm: 'sha1', digits: 6 },
         };
@@ -74,8 +74,8 @@ describe('XotpModule.forRootAsync', () => {
 
   it('loads options from useClass factory', async () => {
     @Injectable()
-    class TestOptionsFactory implements XOTPOptionsFactory {
-      createXOTPModuleOptions(): XOTPModuleOptions {
+    class TestOptionsFactory implements XotpOptionsFactory {
+      createXOTPModuleOptions(): XotpModuleOptions {
         return {
           totp: { algorithm: 'sha1', digits: 8, duration: 30 },
         };
@@ -108,7 +108,7 @@ describe('XotpModule.forRootAsync', () => {
       {
         imports: [ConfigModule],
         inject: [ConfigService],
-        useFactory: (config: ConfigService): XOTPModuleOptions => ({
+        useFactory: (config: ConfigService): XotpModuleOptions => ({
           totp: {
             algorithm: 'sha1',
             digits: config.totpDigits,
@@ -131,7 +131,7 @@ describe('XotpModule.forRootAsync', () => {
   it('loads options from async useFactory', async () => {
     await withForRootAsyncModule(
       {
-        useFactory: async (): Promise<XOTPModuleOptions> => {
+        useFactory: async (): Promise<XotpModuleOptions> => {
           await Promise.resolve();
           return {
             totp: { algorithm: 'sha1', digits: 8, duration: 30 },
@@ -151,8 +151,8 @@ describe('XotpModule.forRootAsync', () => {
 
   it('loads options from async factory class', async () => {
     @Injectable()
-    class AsyncOptionsFactory implements XOTPOptionsFactory {
-      async createXOTPModuleOptions(): Promise<XOTPModuleOptions> {
+    class AsyncOptionsFactory implements XotpOptionsFactory {
+      async createXOTPModuleOptions(): Promise<XotpModuleOptions> {
         await Promise.resolve();
         return {
           hotp: { algorithm: 'sha1', digits: 6 },
@@ -178,7 +178,7 @@ describe('XotpModule.forRootAsync', () => {
   it('applies nested totp and hotp overrides independently', async () => {
     await withForRootAsyncModule(
       {
-        useFactory: (): XOTPModuleOptions => ({
+        useFactory: (): XotpModuleOptions => ({
           algorithm: 'sha512',
           totp: { algorithm: 'sha1', digits: 8, duration: 30 },
           hotp: { algorithm: 'sha1', digits: 6 },

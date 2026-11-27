@@ -4,7 +4,7 @@ Load `nestjs-xotp` options from environment variables with `XotpModule.forRootAs
 
 This example shows:
 
-- An `OtpConfigService` that implements `XOTPOptionsFactory`
+- An `OtpConfigService` that implements `XotpOptionsFactory`
 - `XotpModule.forRootAsync({ imports, useExisting })` wiring
 - Reading TOTP settings from `process.env` at bootstrap (`Number(...)` — xotp rejects string env values)
 - Async `validate()` for token checks
@@ -100,4 +100,4 @@ XotpModule.forRootAsync({
 })
 ```
 
-`OtpConfigService.createXOTPModuleOptions()` maps environment variables to `XOTPModuleOptions`. In a real app, this service might read from `@nestjs/config`, a secrets manager, or another config source instead of `process.env` directly.
+`OtpConfigService.createXOTPModuleOptions()` maps environment variables to `XotpModuleOptions`. In a real app, this service might read from `@nestjs/config`, a secrets manager, or another config source instead of `process.env` directly.

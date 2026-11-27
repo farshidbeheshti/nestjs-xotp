@@ -1,7 +1,7 @@
-import { XOTPModuleOptions } from 'nestjs-xotp';
+import { XotpModuleOptions } from 'nestjs-xotp';
 import { APP_ISSUER } from './two-factor.constants';
 
-export const xotpModuleOptions: XOTPModuleOptions = {
+export const xotpModuleOptions: XotpModuleOptions = {
   issuer: APP_ISSUER,
   totp: {
     digits: 6,

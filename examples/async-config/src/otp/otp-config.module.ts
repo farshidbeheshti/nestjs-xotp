@@ -1,10 +1,10 @@
 import { Injectable, Module } from '@nestjs/common';
-import { XOTPModuleOptions, XOTPOptionsFactory } from 'nestjs-xotp';
+import { XotpModuleOptions, XotpOptionsFactory } from 'nestjs-xotp';
 import { Algorithm } from 'xotp';
 
 @Injectable()
-export class OtpConfigService implements XOTPOptionsFactory {
-  createXOTPModuleOptions(): XOTPModuleOptions {
+export class OtpConfigService implements XotpOptionsFactory {
+  createXOTPModuleOptions(): XotpModuleOptions {
     return {
       issuer: process.env.OTP_ISSUER ?? 'MyApp',
       totp: {
