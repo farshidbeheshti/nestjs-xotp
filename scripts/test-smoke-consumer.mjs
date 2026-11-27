@@ -21,7 +21,7 @@ try {
           '@nestjs/common': '^11.0.0',
           '@nestjs/core': '^11.0.0',
           '@nestjs/testing': '^11.0.0',
-          xotp: '^1.1.0',
+          xotp: '^2.0.0',
         },
       },
       null,
