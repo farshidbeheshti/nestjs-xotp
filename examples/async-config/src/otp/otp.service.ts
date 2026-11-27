@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { XOTPTOTPService } from 'nestjs-xotp';
+import { XotpTotpService } from 'nestjs-xotp';
 import type { OTPWindow } from 'xotp';
 
 export type OtpSettings = {
@@ -12,7 +12,7 @@ export type OtpSettings = {
 
 @Injectable()
 export class OtpService {
-  constructor(private readonly totp: XOTPTOTPService) {}
+  constructor(private readonly totp: XotpTotpService) {}
 
   getSettings(): OtpSettings {
     return {

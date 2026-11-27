@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { XOTPTOTPService } from 'nestjs-xotp';
+import { XotpTotpService } from 'nestjs-xotp';
 import { APP_ISSUER } from './two-factor.constants';
 
 type EnrollmentRecord = {
@@ -21,10 +21,10 @@ export type VerifyResult =
 export class TwoFactorService {
   private readonly records = new Map<string, EnrollmentRecord>();
 
-  constructor(private readonly totp: XOTPTOTPService) {}
+  constructor(private readonly totp: XotpTotpService) {}
 
   enroll(account: string): EnrollResult {
-    const enrollment = XOTPTOTPService.create({
+    const enrollment = XotpTotpService.create({
       account,
       issuer: APP_ISSUER,
     });

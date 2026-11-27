@@ -1,5 +1,5 @@
 import { Secret } from 'xotp';
-import { XOTPSecret, XOTPService } from '../../../src';
+import { XOTPSecret, XotpService } from '../../../src';
 import { RFC6238_SECRET } from '../../fixtures/rfc-secrets';
 import { withForRootModule } from '../../support/xotp-testing-module';
 
@@ -19,9 +19,9 @@ describe('XOTPSecret', () => {
     expect(fromWrapper.toString('ascii')).toBe(fromXotp.toString('ascii'));
   });
 
-  it('is not exposed through XOTPService (use Secret from xotp)', async () => {
+  it('is not exposed through XotpService (use Secret from xotp)', async () => {
     await withForRootModule(undefined, async (module) => {
-      const xotpService = module.get(XOTPService);
+      const xotpService = module.get(XotpService);
 
       expect(xotpService.secret).toBe(Secret);
       expect(xotpService.secret).not.toBe(XOTPSecret);

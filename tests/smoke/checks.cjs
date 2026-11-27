@@ -3,7 +3,7 @@ const TOTP_TIMESTAMP_MS = 59 * 1000;
 const TOTP_TOKEN = '94287082';
 const HOTP_TOKEN = '755224';
 
-async function runChecks({ XOTPModule, XOTPService }) {
+async function runChecks({ XotpModule, XotpService }) {
   require('reflect-metadata');
 
   const { Test } = require('@nestjs/testing');
@@ -11,7 +11,7 @@ async function runChecks({ XOTPModule, XOTPService }) {
 
   const module = await Test.createTestingModule({
     imports: [
-      XOTPModule.forRoot({
+      XotpModule.forRoot({
         totp: { algorithm: 'sha1', digits: 8, duration: 30 },
         hotp: { algorithm: 'sha1', digits: 6 },
       }),
@@ -19,10 +19,10 @@ async function runChecks({ XOTPModule, XOTPService }) {
   }).compile();
 
   try {
-    const xotpService = module.get(XOTPService);
+    const xotpService = module.get(XotpService);
 
     if (xotpService.uri !== URI) {
-      throw new Error('XOTPService.uri does not match xotp URI');
+      throw new Error('XotpService.uri does not match xotp URI');
     }
 
     const secret = Secret.from(TOTP_SECRET, 'ascii');

@@ -1,17 +1,17 @@
 import { DynamicModule, Module } from '@nestjs/common';
-import { XOTPService, XOTPHOTPService, XOTPTOTPService } from './services';
+import { XotpService, XotpHotpService, XotpTotpService } from './services';
 import { XOTP_MODULE_OPTIONS } from './xotp.constants';
 import { XOTPModuleAsyncOptions, XOTPModuleOptions } from './xotp.interfaces';
 import { createXOTPAsyncProviders } from './xotp.provider';
 
 @Module({
-  providers: [XOTPService, XOTPTOTPService, XOTPHOTPService],
-  exports: [XOTPService, XOTPTOTPService, XOTPHOTPService],
+  providers: [XotpService, XotpTotpService, XotpHotpService],
+  exports: [XotpService, XotpTotpService, XotpHotpService],
 })
-export class XOTPModule {
+export class XotpModule {
   public static forRoot(options?: XOTPModuleOptions): DynamicModule {
     return {
-      module: XOTPModule,
+      module: XotpModule,
       providers: [
         {
           provide: XOTP_MODULE_OPTIONS,
@@ -23,7 +23,7 @@ export class XOTPModule {
 
   public static forRootAsync(options: XOTPModuleAsyncOptions): DynamicModule {
     return {
-      module: XOTPModule,
+      module: XotpModule,
       imports: options.imports,
       providers: createXOTPAsyncProviders(options),
     };

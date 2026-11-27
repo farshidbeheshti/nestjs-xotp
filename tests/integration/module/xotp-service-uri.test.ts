@@ -1,12 +1,12 @@
 import { Secret, URI } from 'xotp';
-import { XOTPService } from '../../../src';
+import { XotpService } from '../../../src';
 import { RFC6238_SECRET } from '../../fixtures/rfc-secrets';
 import { withForRootModule } from '../../support/xotp-testing-module';
 
-describe('XOTPService uri', () => {
+describe('XotpService uri', () => {
   it('exposes the xotp URI helper', async () => {
     await withForRootModule(undefined, (module) => {
-      expect(module.get(XOTPService).uri).toBe(URI);
+      expect(module.get(XotpService).uri).toBe(URI);
     });
   });
 
@@ -21,7 +21,7 @@ describe('XOTPService uri', () => {
         totp: { algorithm: 'sha1', digits: 8, duration: 30 },
       },
       (module) => {
-        const xotp = module.get(XOTPService);
+        const xotp = module.get(XotpService);
         const keyUri = xotp.totp.toKeyUri();
         const parsed = xotp.uri.parse(keyUri);
 

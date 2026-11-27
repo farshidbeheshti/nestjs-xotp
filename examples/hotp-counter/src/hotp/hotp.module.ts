@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { XOTPModule } from 'nestjs-xotp';
+import { XotpModule } from 'nestjs-xotp';
 import { HotpController } from './hotp.controller';
 import { HotpService } from './hotp.service';
 import { xotpModuleOptions } from './xotp.config';
 
 @Module({
-  imports: [XOTPModule.forRoot(xotpModuleOptions)],
+  imports: [XotpModule.forRoot(xotpModuleOptions)],
   controllers: [HotpController],
   providers: [HotpService],
 })

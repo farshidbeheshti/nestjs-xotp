@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { XOTPTOTPService } from './xotp.totp.service';
-import { XOTPHOTPService } from './xotp.hotp.service';
+import { XotpTotpService } from './xotp.totp.service';
+import { XotpHotpService } from './xotp.hotp.service';
 
 import { Secret, URI } from 'xotp';
 
 @Injectable()
-export class XOTPService {
-  totp: XOTPTOTPService;
-  hotp: XOTPHOTPService;
+export class XotpService {
+  totp: XotpTotpService;
+  hotp: XotpHotpService;
   secret: typeof Secret;
   uri: typeof URI;
   constructor(
-    public readonly xotpTotpService: XOTPTOTPService,
-    public readonly xotpHotpService: XOTPHOTPService,
+    public readonly xotpTotpService: XotpTotpService,
+    public readonly xotpHotpService: XotpHotpService,
   ) {
     this.totp = xotpTotpService;
     this.hotp = xotpHotpService;

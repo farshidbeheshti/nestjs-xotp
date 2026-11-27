@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import {
-  XOTPModule,
+  XotpModule,
   XOTPModuleAsyncOptions,
   XOTPModuleOptions,
 } from '../../src';
@@ -9,7 +9,7 @@ export async function compileForRootModule(
   options?: XOTPModuleOptions,
 ): Promise<TestingModule> {
   return Test.createTestingModule({
-    imports: [XOTPModule.forRoot(options)],
+    imports: [XotpModule.forRoot(options)],
   }).compile();
 }
 
@@ -17,7 +17,7 @@ export async function compileForRootAsyncModule(
   options: XOTPModuleAsyncOptions,
 ): Promise<TestingModule> {
   return Test.createTestingModule({
-    imports: [XOTPModule.forRootAsync(options)],
+    imports: [XotpModule.forRootAsync(options)],
   }).compile();
 }
 

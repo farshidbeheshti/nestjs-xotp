@@ -3,9 +3,9 @@ import { Secret } from 'xotp';
 import {
   XOTPModuleOptions,
   XOTPOptionsFactory,
-  XOTPService,
-  XOTPHOTPService,
-  XOTPTOTPService,
+  XotpService,
+  XotpHotpService,
+  XotpTotpService,
 } from '../../../src';
 import {
   RFC4226_HOTP_COUNTER_0,
@@ -21,7 +21,7 @@ class ConfigService {
   readonly totpDigits = 8;
 }
 
-describe('XOTPModule.forRootAsync', () => {
+describe('XotpModule.forRootAsync', () => {
   it('loads options from useFactory', async () => {
     await withForRootAsyncModule(
       {
@@ -30,7 +30,7 @@ describe('XOTPModule.forRootAsync', () => {
         }),
       },
       async (module) => {
-        const totp = module.get(XOTPTOTPService);
+        const totp = module.get(XotpTotpService);
         const secret = Secret.from(RFC6238_SECRET, 'ascii');
 
         expect(
@@ -62,7 +62,7 @@ describe('XOTPModule.forRootAsync', () => {
         useExisting: TestOptionsFactory,
       },
       async (module) => {
-        const hotp = module.get(XOTPHOTPService);
+        const hotp = module.get(XotpHotpService);
         const secret = Secret.from(RFC4226_SECRET, 'ascii');
 
         expect(await hotp.generate({ secret, counter: 0 })).toBe(
@@ -87,7 +87,7 @@ describe('XOTPModule.forRootAsync', () => {
         useClass: TestOptionsFactory,
       },
       async (module) => {
-        const totp = module.get(XOTPTOTPService);
+        const totp = module.get(XotpTotpService);
         const secret = Secret.from(RFC6238_SECRET, 'ascii');
 
         expect(
@@ -117,7 +117,7 @@ describe('XOTPModule.forRootAsync', () => {
         }),
       },
       async (module) => {
-        const totp = module.get(XOTPTOTPService);
+        const totp = module.get(XotpTotpService);
         const secret = Secret.from(RFC6238_SECRET, 'ascii');
 
         expect(totp.digits).toBe(8);
@@ -139,7 +139,7 @@ describe('XOTPModule.forRootAsync', () => {
         },
       },
       async (module) => {
-        const totp = module.get(XOTPTOTPService);
+        const totp = module.get(XotpTotpService);
         const secret = Secret.from(RFC6238_SECRET, 'ascii');
 
         expect(
@@ -165,7 +165,7 @@ describe('XOTPModule.forRootAsync', () => {
         useClass: AsyncOptionsFactory,
       },
       async (module) => {
-        const hotp = module.get(XOTPHOTPService);
+        const hotp = module.get(XotpHotpService);
         const secret = Secret.from(RFC4226_SECRET, 'ascii');
 
         expect(await hotp.generate({ secret, counter: 0 })).toBe(
@@ -185,7 +185,7 @@ describe('XOTPModule.forRootAsync', () => {
         }),
       },
       async (module) => {
-        const { totp, hotp } = module.get(XOTPService);
+        const { totp, hotp } = module.get(XotpService);
         const totpSecret = Secret.from(RFC6238_SECRET, 'ascii');
         const hotpSecret = Secret.from(RFC4226_SECRET, 'ascii');
 
