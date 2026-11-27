@@ -34,6 +34,8 @@ Requires **Node.js 20+** and peer dependency **[xotp](https://github.com/farshid
 npm i xotp nestjs-xotp
 ```
 
+`xotp` is a **peer dependency**, so your app and `nestjs-xotp` share one copy of it. Install both, as shown above (npm 7+ and pnpm also install peer dependencies automatically).
+
 ## Usage
 
 Integrate `XotpModule` into your NestJS application by importing it into your `AppModule` and configuring it using the `forRoot()` method.
@@ -73,6 +75,31 @@ import { XotpModule } from 'nestjs-xotp';
 export class AppModule {}
 ```
 
+To resolve dependencies of `useFactory` without importing another module, pass `extraProviders`:
+
+```typescript
+XotpModule.forRootAsync({
+  extraProviders: [ConfigService],
+  inject: [ConfigService],
+  useFactory: (config: ConfigService) => ({
+    digits: config.otpDigits,
+  }),
+});
+```
+
+### Global module
+
+By default you import `XotpModule` in every module that needs it. To register it once and inject it anywhere, set `global: true` on `forRoot()` or `forRootAsync()`:
+
+```typescript
+XotpModule.forRoot({ global: true });
+
+XotpModule.forRootAsync({
+  global: true,
+  useFactory: () => ({ /* ... */ }),
+});
+```
+
 Once `XotpModule` is configured, you can easily inject XotpService into any of your NestJS services or controllers:
 
 ```typescript
@@ -84,6 +111,15 @@ export class MyService {
   constructor(private readonly xotpService: XotpService) {}
 }
 ```
+
+`XotpService` exposes the configured `totp` and `hotp` services, plus the `xotp` helpers `secret` (the `Secret` class) and `uri` (the `URI` class for `URI.parse()` / `URI.format()` of `otpauth://` key URIs):
+
+```typescript
+const parsed = this.xotpService.uri.parse(keyUri);
+const secret = this.xotpService.secret.for('sha1');
+```
+
+The option and result types `TOTPOptions`, `HOTPOptions` and `TOTPVerifyResult` are re-exported from `nestjs-xotp`, so you can import them from there.
 
 ## Examples
 
@@ -222,6 +258,15 @@ You can set distinct options for TOTP or HOTP services individually. For instanc
   }
 }
 ```
+
+### Module registration options
+
+These are passed to `forRoot()` / `forRootAsync()` next to the OTP options. They configure the module only and don't affect the OTP settings:
+
+| Option | Applies to | Description |
+|--------|------------|-------------|
+| `global` | `forRoot`, `forRootAsync` | Register the module globally. Default `false`. |
+| `extraProviders` | `forRootAsync` | Providers registered alongside the options, usable in `inject`. |
 
 ## License
 
