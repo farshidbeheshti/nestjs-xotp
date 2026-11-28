@@ -2,7 +2,7 @@
 // runs the CommonJS and ESM smoke checks there.
 //
 // Usage: node scripts/test-smoke-consumer.mjs [nest-major ...]
-// Defaults to Nest 11 and 12.
+// Defaults to Nest 10, 11 and 12.
 import { spawnSync } from 'node:child_process';
 import { copyFileSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -14,7 +14,7 @@ const rootDir = resolve(__dirname, '..');
 const smokeDir = join(rootDir, 'tests/smoke');
 const nestMajors = process.argv.slice(2).length
   ? process.argv.slice(2)
-  : ['11', '12'];
+  : ['10', '11', '12'];
 
 function run(command, args, cwd) {
   return spawnSync(command, args, { cwd, stdio: 'inherit' }).status ?? 1;
