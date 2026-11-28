@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { XOTPHOTPService } from 'nestjs-xotp';
+import { XotpHotpService } from 'nestjs-xotp';
 import { APP_ISSUER } from './hotp.constants';
 
 type HotpRecord = {
@@ -23,10 +23,10 @@ export type VerifyResult = {
 export class HotpService {
   private readonly records = new Map<string, HotpRecord>();
 
-  constructor(private readonly hotp: XOTPHOTPService) {}
+  constructor(private readonly hotp: XotpHotpService) {}
 
   enroll(account: string): EnrollResult {
-    const enrollment = XOTPHOTPService.create({
+    const enrollment = XotpHotpService.create({
       account,
       issuer: APP_ISSUER,
     });

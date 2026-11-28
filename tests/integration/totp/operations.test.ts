@@ -1,5 +1,5 @@
 import { Secret } from 'xotp';
-import { XOTPTOTPService } from '../../../src';
+import { XotpTotpService } from '../../../src';
 import {
   RFC6238_SECRET,
   RFC6238_SECRETS,
@@ -10,7 +10,7 @@ import {
 } from '../../fixtures/rfc-secrets';
 import { withForRootModule } from '../../support/xotp-testing-module';
 
-describe('XOTPTOTPService operations', () => {
+describe('XotpTotpService operations', () => {
   it('finds token drift with compare using module window', async () => {
     await withForRootModule(
       {
@@ -22,7 +22,7 @@ describe('XOTPTOTPService operations', () => {
         },
       },
       async (module) => {
-        const totp = module.get(XOTPTOTPService);
+        const totp = module.get(XotpTotpService);
         const secret = Secret.from(RFC6238_SECRET, 'ascii');
         const token = await totp.generate({
           secret,
@@ -51,7 +51,7 @@ describe('XOTPTOTPService operations', () => {
         },
       },
       async (module) => {
-        const totp = module.get(XOTPTOTPService);
+        const totp = module.get(XotpTotpService);
         const secret = Secret.from(RFC6238_SECRET, 'ascii');
         const pastToken = await totp.generate({
           secret,
@@ -86,7 +86,7 @@ describe('XOTPTOTPService operations', () => {
         totp: { algorithm: 'sha1', digits: 8, duration: 30, window: 1 },
       },
       async (module) => {
-        const totp = module.get(XOTPTOTPService);
+        const totp = module.get(XotpTotpService);
         const secret = Secret.from(RFC6238_SECRET, 'ascii');
         const token = await totp.generate({
           secret,
@@ -111,7 +111,7 @@ describe('XOTPTOTPService operations', () => {
         totp: { algorithm: 'sha1', digits: 8, duration: 30 },
       },
       async (module) => {
-        const totp = module.get(XOTPTOTPService);
+        const totp = module.get(XotpTotpService);
         const secret = Secret.from(RFC6238_SECRET, 'ascii');
         const token = await totp.generate({
           secret,
@@ -138,7 +138,7 @@ describe('XOTPTOTPService operations', () => {
         totp: { algorithm: 'sha1', digits: 8, duration: 30, window: 1 },
       },
       async (module) => {
-        const totp = module.get(XOTPTOTPService);
+        const totp = module.get(XotpTotpService);
         const secret = Secret.from(RFC6238_SECRET, 'ascii');
         const token = await totp.generate({
           secret,
@@ -174,7 +174,7 @@ describe('XOTPTOTPService operations', () => {
           totp: { algorithm: 'sha1', digits: 8, duration: 30 },
         },
         async (module) => {
-          const totp = module.get(XOTPTOTPService);
+          const totp = module.get(XotpTotpService);
 
           expect(totp.timeUsed({ timestamp: RFC6238_TIMESTAMP_MS })).toBe(29);
           expect(
@@ -197,7 +197,7 @@ describe('XOTPTOTPService operations', () => {
             totp: { algorithm: _algorithm, digits: 8, duration: 30 },
           },
           async (module) => {
-            const totp = module.get(XOTPTOTPService);
+            const totp = module.get(XotpTotpService);
             const secret = Secret.from(secretValue, 'ascii');
 
             expect(

@@ -1,8 +1,8 @@
 import { Secret, URI } from 'xotp';
 import {
-  XOTPService,
-  XOTPHOTPService,
-  XOTPTOTPService,
+  XotpService,
+  XotpHotpService,
+  XotpTotpService,
 } from '../../../src';
 import {
   RFC4226_HOTP_COUNTER_0,
@@ -17,7 +17,7 @@ import {
   withForRootModule,
 } from '../../support/xotp-testing-module';
 
-describe('XOTPModule.forRoot', () => {
+describe('XotpModule.forRoot', () => {
   describe('dependency injection', () => {
     let module: Awaited<ReturnType<typeof compileForRootModule>>;
 
@@ -32,14 +32,15 @@ describe('XOTPModule.forRoot', () => {
       await module.close();
     });
 
-    it('provides XOTPService with injectable TOTP and HOTP services', () => {
-      const xotpService = module.get(XOTPService);
+    it('provides XotpService with injectable TOTP and HOTP services', () => {
+      const xotpService = module.get(XotpService);
 
-      expect(xotpService.totp).toBeInstanceOf(XOTPTOTPService);
-      expect(xotpService.hotp).toBeInstanceOf(XOTPHOTPService);
+      expect(xotpService.totp).toBeInstanceOf(XotpTotpService);
+      expect(xotpService.hotp).toBeInstanceOf(XotpHotpService);
       expect(xotpService.secret).toBe(Secret);
-      expect(module.get(XOTPTOTPService)).toBe(xotpService.totp);
-      expect(module.get(XOTPHOTPService)).toBe(xotpService.hotp);
+      expect(xotpService.uri).toBe(URI);
+      expect(module.get(XotpTotpService)).toBe(xotpService.totp);
+      expect(module.get(XotpHotpService)).toBe(xotpService.hotp);
     });
   });
 
@@ -51,7 +52,7 @@ describe('XOTPModule.forRoot', () => {
           hotp: { algorithm: 'sha1', digits: 6 },
         },
         async (module) => {
-          const { totp } = module.get(XOTPService);
+          const { totp } = module.get(XotpService);
           const secret = Secret.from(RFC6238_SECRET, 'ascii');
           const token = await totp.generate({
             secret,
@@ -76,7 +77,7 @@ describe('XOTPModule.forRoot', () => {
           hotp: { algorithm: 'sha1', digits: 6 },
         },
         async (module) => {
-          const { hotp } = module.get(XOTPService);
+          const { hotp } = module.get(XotpService);
           const secret = Secret.from(RFC4226_SECRET, 'ascii');
 
           expect(await hotp.generate({ secret, counter: 0 })).toBe(
@@ -93,8 +94,8 @@ describe('XOTPModule.forRoot', () => {
   describe('defaults', () => {
     it('uses xotp defaults when no options are passed', async () => {
       await withForRootModule(undefined, async (module) => {
-        const totp = module.get(XOTPTOTPService);
-        const hotp = module.get(XOTPHOTPService);
+        const totp = module.get(XotpTotpService);
+        const hotp = module.get(XotpHotpService);
         const secret = Secret.from(RFC6238_SECRET, 'ascii');
         const token = await totp.generate({
           secret,
@@ -132,7 +133,7 @@ describe('XOTPModule.forRoot', () => {
           totp: { algorithm: 'sha1', digits: 8, duration: 30 },
         },
         async (module) => {
-          const totp = module.get(XOTPTOTPService);
+          const totp = module.get(XotpTotpService);
           const parsed = URI.parse(totp.toKeyUri());
 
           expect(parsed.type).toBe('totp');
@@ -149,7 +150,7 @@ describe('XOTPModule.forRoot', () => {
           hotp: { algorithm: 'sha1', digits: 6 },
         },
         async (module) => {
-          const hotp = module.get(XOTPHOTPService);
+          const hotp = module.get(XotpHotpService);
           const secret = Secret.from(RFC4226_SECRET, 'ascii');
 
           expect(hotp.counter).toBe(1);
@@ -167,7 +168,7 @@ describe('XOTPModule.forRoot', () => {
           totp: { algorithm: 'sha1', digits: 8, duration: 30 },
         },
         async (module) => {
-          const totp = module.get(XOTPTOTPService);
+          const totp = module.get(XotpTotpService);
           const secret = Secret.from(RFC6238_SECRET, 'ascii');
           const token = await totp.generate({
             secret,
@@ -195,7 +196,7 @@ describe('XOTPModule.forRoot', () => {
           hotp: { algorithm: 'sha1', digits: 6 },
         },
         async (module) => {
-          const { totp, hotp } = module.get(XOTPService);
+          const { totp, hotp } = module.get(XotpService);
 
           expect(totp.secret).toEqual(secret);
           expect(hotp.secret).toEqual(secret);
@@ -219,7 +220,7 @@ describe('XOTPModule.forRoot', () => {
           totp: { algorithm: 'sha1', digits: 6, duration: 30 },
         },
         async (module) => {
-          const totp = module.get(XOTPTOTPService);
+          const totp = module.get(XotpTotpService);
 
           expect(totp.secret).toBeDefined();
           expect(typeof (await totp.generate())).toBe('string');
@@ -236,7 +237,7 @@ describe('XOTPModule.forRoot', () => {
           totp: { algorithm: 'sha1', digits: 8, duration: 30 },
         },
         async (module) => {
-          const totp = module.get(XOTPTOTPService);
+          const totp = module.get(XotpTotpService);
 
           expect(totp.secret).toEqual(secret);
 
@@ -260,7 +261,7 @@ describe('XOTPModule.forRoot', () => {
           hotp: { algorithm: 'sha1', digits: 6 },
         },
         async (module) => {
-          const hotp = module.get(XOTPHOTPService);
+          const hotp = module.get(XotpHotpService);
 
           expect(hotp.secret).toBeDefined();
           expect(typeof (await hotp.generate())).toBe('string');

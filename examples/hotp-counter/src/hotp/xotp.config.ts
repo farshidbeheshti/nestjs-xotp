@@ -1,7 +1,7 @@
-import { XOTPModuleOptions } from 'nestjs-xotp';
+import { XotpModuleOptions } from 'nestjs-xotp';
 import { APP_ISSUER } from './hotp.constants';
 
-export const xotpModuleOptions: XOTPModuleOptions = {
+export const xotpModuleOptions: XotpModuleOptions = {
   issuer: APP_ISSUER,
   hotp: {
     algorithm: 'sha1',

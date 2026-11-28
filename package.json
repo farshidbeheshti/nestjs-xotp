@@ -1,6 +1,6 @@
 {
   "name": "nestjs-xotp",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "NestJS XOTP - A powerful one-time password (OTP) library for NestJS.",
   "author": "Farshid Beheshti",
   "license": "MIT",
@@ -12,12 +12,14 @@
     "README.md"
   ],
   "engines": {
-    "node": ">=20"
+    "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
     "lint": "eslint src/**/*.ts",
     "test": "jest",
-    "test:smoke": "node tests/smoke/cjs.cjs",
+    "test:smoke": "node tests/smoke/cjs.cjs && node tests/smoke/esm.mjs",
+    "test:smoke:cjs": "node tests/smoke/cjs.cjs",
+    "test:smoke:esm": "node tests/smoke/esm.mjs",
     "test:smoke:consumer": "node scripts/test-smoke-consumer.mjs",
     "prebuild": "rimraf dist/*",
     "build": "tsc -p tsconfig.build.json"
@@ -57,8 +59,8 @@
     "eslint-plugin-prettier": "^5.0.0"
   },
   "peerDependencies": {
-    "@nestjs/common": "^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0",
-    "@nestjs/core": "^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0",
+    "@nestjs/common": "^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0",
+    "@nestjs/core": "^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0",
     "xotp": "^2.0.0"
   }
 }

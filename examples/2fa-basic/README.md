@@ -4,15 +4,15 @@ Minimal TOTP enrollment and verification with `nestjs-xotp` (xotp v2).
 
 This example shows two patterns from the underlying [xotp](https://github.com/farshidbeheshti/xotp) library:
 
-- **Enrollment** — `XOTPTOTPService.create()` generates a per-user secret and `otpauth://` URI.
-- **Verification** — a shared injected `XOTPTOTPService` uses `verify()` with each user's stored secret and `afterTimeStep` for replay protection.
+- **Enrollment** — `XotpTotpService.create()` generates a per-user secret and `otpauth://` URI.
+- **Verification** — a shared injected `XotpTotpService` uses `verify()` with each user's stored secret and `afterTimeStep` for replay protection.
 
 Secrets and last time steps are kept in memory only. In production, persist and encrypt them in your database (use a conditional update when saving `lastTimeStep`).
 
 ## How it works
 
-- `TwoFactorModule` imports `XOTPModule.forRoot()` so `XOTPTOTPService` can be injected into `TwoFactorService`.
-- **Enrollment** uses `XOTPTOTPService.create()` to generate a per-user secret and `otpauth://` URI.
+- `TwoFactorModule` imports `XotpModule.forRoot()` so `XotpTotpService` can be injected into `TwoFactorService`.
+- **Enrollment** uses `XotpTotpService.create()` to generate a per-user secret and `otpauth://` URI.
 - **Verification** calls `await totp.verify({ secret, token, afterTimeStep })` and stores `timeStep` on success so the same token cannot be reused.
 
 ## Run

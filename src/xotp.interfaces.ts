@@ -1,21 +1,27 @@
-import { ModuleMetadata, Type } from '@nestjs/common';
+import { ModuleMetadata, Provider, Type } from '@nestjs/common';
 import { HOTPOptions, TOTPOptions } from 'xotp';
 
-export type XOTPModuleOptions = Partial<TOTPOptions> &
+export type XotpModuleOptions = Partial<TOTPOptions> &
   Partial<HOTPOptions> & { hotp?: Partial<HOTPOptions> } & {
     totp?: Partial<TOTPOptions>;
   };
 
-export interface XOTPOptionsFactory {
-  createXOTPModuleOptions(): XOTPModuleOptions | Promise<XOTPModuleOptions>;
+export type XotpForRootOptions = XotpModuleOptions & {
+  global?: boolean;
+};
+
+export interface XotpOptionsFactory {
+  createXOTPModuleOptions(): XotpModuleOptions | Promise<XotpModuleOptions>;
 }
 
-export interface XOTPModuleAsyncOptions
+export interface XotpModuleAsyncOptions
   extends Pick<ModuleMetadata, 'imports'> {
-  useExisting?: Type<XOTPOptionsFactory>;
-  useClass?: Type<XOTPOptionsFactory>;
+  useExisting?: Type<XotpOptionsFactory>;
+  useClass?: Type<XotpOptionsFactory>;
   useFactory?: (
     ...args: any[]
-  ) => Promise<XOTPModuleOptions> | XOTPModuleOptions;
+  ) => Promise<XotpModuleOptions> | XotpModuleOptions;
   inject?: any[];
+  extraProviders?: Provider[];
+  global?: boolean;
 }

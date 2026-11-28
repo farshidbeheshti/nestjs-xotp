@@ -1,19 +1,19 @@
 import { Secret } from 'xotp';
-import { XOTPHOTPService } from '../../../src';
+import { XotpHotpService } from '../../../src';
 import {
   RFC4226_HOTP_COUNTER_0,
   RFC4226_SECRET,
 } from '../../fixtures/rfc-secrets';
 import { withForRootModule } from '../../support/xotp-testing-module';
 
-describe('XOTPHOTPService operations', () => {
+describe('XotpHotpService operations', () => {
   it('validates generated HOTP tokens', async () => {
     await withForRootModule(
       {
         hotp: { algorithm: 'sha1', digits: 6 },
       },
       async (module) => {
-        const hotp = module.get(XOTPHOTPService);
+        const hotp = module.get(XotpHotpService);
         const secret = Secret.from(RFC4226_SECRET, 'ascii');
         const token = await hotp.generate({ secret, counter: 0 });
 
@@ -29,7 +29,7 @@ describe('XOTPHOTPService operations', () => {
         hotp: { algorithm: 'sha1', digits: 6, window: 1 },
       },
       async (module) => {
-        const hotp = module.get(XOTPHOTPService);
+        const hotp = module.get(XotpHotpService);
         const secret = Secret.from(RFC4226_SECRET, 'ascii');
         const token = await hotp.generate({ secret, counter: 1 });
 
@@ -50,7 +50,7 @@ describe('XOTPHOTPService operations', () => {
         hotp: { algorithm: 'sha1', digits: 6, window: 1 },
       },
       async (module) => {
-        const hotp = module.get(XOTPHOTPService);
+        const hotp = module.get(XotpHotpService);
         const secret = Secret.from(RFC4226_SECRET, 'ascii');
         const token = await hotp.generate({ secret, counter: 0 });
 
@@ -71,7 +71,7 @@ describe('XOTPHOTPService operations', () => {
         hotp: { algorithm: 'sha1', digits: 6 },
       },
       async (module) => {
-        const hotp = module.get(XOTPHOTPService);
+        const hotp = module.get(XotpHotpService);
         const secret = Secret.from(RFC4226_SECRET, 'ascii');
         const token = await hotp.generate({ secret, counter: 0 });
 

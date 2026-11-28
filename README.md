@@ -14,7 +14,6 @@
 
 `nestjs-xotp` provides a convenient way to use the XOTP library within your NestJS applications. It fully leverages NestJS's powerful dependency injection system, making it easy to manage, generate, and validate OTPs (Time-based One-Time Passwords - TOTP, and HMAC-based One-Time Passwords - HOTP) for robust security within your services.
 
-Requires **Node.js 20+** and peer dependency **[xotp](https://github.com/farshidbeheshti/xotp) v2** (async Web Crypto API).
 
 > [!IMPORTANT]
 > **xotp v2 is async.** `await` `generate`, `validate`, `compare`, `equals`, and `verify`. See [Migrating from v1](https://github.com/farshidbeheshti/xotp#migrating-from-v1).
@@ -34,18 +33,20 @@ Requires **Node.js 20+** and peer dependency **[xotp](https://github.com/farshid
 npm i xotp nestjs-xotp
 ```
 
+`xotp` is a **peer dependency**, so your app and `nestjs-xotp` share one copy of it. Install both, as shown above (npm 7+ and pnpm also install peer dependencies automatically).
+
 ## Usage
 
-Integrate `XOTPModule` into your NestJS application by importing it into your `AppModule` and configuring it using the `forRoot()` method.
+Integrate `XotpModule` into your NestJS application by importing it into your `AppModule` and configuring it using the `forRoot()` method.
 See the [options reference section](#options) for the options with which you can customize the module!
 
 ```typescript
 import { Module } from '@nestjs/common';
-import { XOTPModule } from 'nestjs-xotp';
+import { XotpModule } from 'nestjs-xotp';
 
 @Module({
   imports: [
-    XOTPModule.forRoot({
+    XotpModule.forRoot({
       // Optional: Your XOTP configuration options go here
     }),
   ],
@@ -59,11 +60,11 @@ If your configuration depends on dynamic values, like environment variables or d
 
 ```typescript
 import { Module } from '@nestjs/common';
-import { XOTPModule } from 'nestjs-xotp';
+import { XotpModule } from 'nestjs-xotp';
 
 @Module({
   imports: [
-    XOTPModule.forRootAsync({
+    XotpModule.forRootAsync({
       useFactory: () => ({
         // Your XOTP configuration options, dynamically provided
       }),
@@ -73,17 +74,51 @@ import { XOTPModule } from 'nestjs-xotp';
 export class AppModule {}
 ```
 
-Once `XOTPModule` is configured, you can easily inject XOTPService into any of your NestJS services or controllers:
+To resolve dependencies of `useFactory` without importing another module, pass `extraProviders`:
+
+```typescript
+XotpModule.forRootAsync({
+  extraProviders: [ConfigService],
+  inject: [ConfigService],
+  useFactory: (config: ConfigService) => ({
+    digits: config.otpDigits,
+  }),
+});
+```
+
+### Global module
+
+By default you import `XotpModule` in every module that needs it. To register it once and inject it anywhere, set `global: true` on `forRoot()` or `forRootAsync()`:
+
+```typescript
+XotpModule.forRoot({ global: true });
+
+XotpModule.forRootAsync({
+  global: true,
+  useFactory: () => ({ /* ... */ }),
+});
+```
+
+Once `XotpModule` is configured, you can easily inject XotpService into any of your NestJS services or controllers:
 
 ```typescript
 import { Injectable } from '@nestjs/common';
-import { XOTPService } from 'nestjs-xotp';
+import { XotpService } from 'nestjs-xotp';
 
 @Injectable()
 export class MyService {
-  constructor(private readonly xotpService: XOTPService) {}
+  constructor(private readonly xotpService: XotpService) {}
 }
 ```
+
+`XotpService` exposes the configured `totp` and `hotp` services, plus the `xotp` helpers `secret` (the `Secret` class) and `uri` (the `URI` class for `URI.parse()` / `URI.format()` of `otpauth://` key URIs):
+
+```typescript
+const parsed = this.xotpService.uri.parse(keyUri);
+const secret = this.xotpService.secret.for('sha1');
+```
+
+The option and result types `TOTPOptions`, `HOTPOptions` and `TOTPVerifyResult` are re-exported from `nestjs-xotp`, so you can import them from there.
 
 ## Examples
 
@@ -154,11 +189,11 @@ Prefer `verify()` over `validate()` for login 2FA. Pass each user's secret per c
 
 ```typescript
 import { Injectable } from '@nestjs/common';
-import { XOTPTOTPService } from 'nestjs-xotp';
+import { XotpTotpService } from 'nestjs-xotp';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly totp: XOTPTOTPService) {}
+  constructor(private readonly totp: XotpTotpService) {}
 
   async verify(
     userSecretBase32: string,
@@ -185,7 +220,7 @@ export class AuthService {
 For enrollment, create a bound instance and export the key URI:
 
 ```typescript
-const enrollment = XOTPTOTPService.create({
+const enrollment = XotpTotpService.create({
   account: 'user@example.com',
   issuer: 'MyApp',
 });
@@ -222,6 +257,15 @@ You can set distinct options for TOTP or HOTP services individually. For instanc
   }
 }
 ```
+
+### Module registration options
+
+These are passed to `forRoot()` / `forRootAsync()` next to the OTP options. They configure the module only and don't affect the OTP settings:
+
+| Option | Applies to | Description |
+|--------|------------|-------------|
+| `global` | `forRoot`, `forRootAsync` | Register the module globally. Default `false`. |
+| `extraProviders` | `forRootAsync` | Providers registered alongside the options, usable in `inject`. |
 
 ## License
 

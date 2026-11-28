@@ -1,7 +1,7 @@
 import { Injectable, Module } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { Secret } from 'xotp';
-import { XOTPModule, XOTPService } from '../../../src';
+import { XotpModule, XotpService } from '../../../src';
 import {
   RFC4226_HOTP_COUNTER_0,
   RFC4226_SECRET,
@@ -9,7 +9,7 @@ import {
 
 @Injectable()
 class ConsumerService {
-  constructor(private readonly xotpService: XOTPService) {}
+  constructor(private readonly xotpService: XotpService) {}
 
   async generateHotp() {
     const secret = Secret.from(RFC4226_SECRET, 'ascii');
@@ -19,7 +19,7 @@ class ConsumerService {
 
 @Module({
   imports: [
-    XOTPModule.forRoot({
+    XotpModule.forRoot({
       hotp: { algorithm: 'sha1', digits: 6 },
     }),
   ],
@@ -27,8 +27,8 @@ class ConsumerService {
 })
 class AppModule {}
 
-describe('XOTPModule exports', () => {
-  it('allows injecting XOTPService into a consumer module', async () => {
+describe('XotpModule exports', () => {
+  it('allows injecting XotpService into a consumer module', async () => {
     const module = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
