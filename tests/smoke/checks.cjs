@@ -3,11 +3,29 @@ const TOTP_TIMESTAMP_MS = 59 * 1000;
 const TOTP_TOKEN = '94287082';
 const HOTP_TOKEN = '755224';
 
-async function runChecks({ XotpModule, XotpService }) {
+async function runChecks({
+  XotpModule,
+  XotpService,
+  XotpTotpService,
+  XotpHotpService,
+  XOTPModule,
+  XOTPService,
+  XOTPTOTPService,
+  XOTPHOTPService,
+}) {
   require('reflect-metadata');
 
   const { Test } = require('@nestjs/testing');
   const { Secret, URI } = require('xotp');
+
+  if (
+    XOTPModule !== XotpModule ||
+    XOTPService !== XotpService ||
+    XOTPTOTPService !== XotpTotpService ||
+    XOTPHOTPService !== XotpHotpService
+  ) {
+    throw new Error('Deprecated XOTP* aliases differ from the Xotp* classes');
+  }
 
   const module = await Test.createTestingModule({
     imports: [
@@ -48,7 +66,9 @@ async function runChecks({ XotpModule, XotpService }) {
     const hotpToken = await xotpService.hotp.generate({ secret, counter: 0 });
 
     if (hotpToken !== HOTP_TOKEN) {
-      throw new Error(`HOTP generate: expected ${HOTP_TOKEN}, got ${hotpToken}`);
+      throw new Error(
+        `HOTP generate: expected ${HOTP_TOKEN}, got ${hotpToken}`,
+      );
     }
   } finally {
     await module.close();

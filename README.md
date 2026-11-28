@@ -14,7 +14,6 @@
 
 `nestjs-xotp` provides a convenient way to use the XOTP library within your NestJS applications. It fully leverages NestJS's powerful dependency injection system, making it easy to manage, generate, and validate OTPs (Time-based One-Time Passwords - TOTP, and HMAC-based One-Time Passwords - HOTP) for robust security within your services.
 
-Requires **Node.js 20+** and peer dependency **[xotp](https://github.com/farshidbeheshti/xotp) v2** (async Web Crypto API).
 
 > [!IMPORTANT]
 > **xotp v2 is async.** `await` `generate`, `validate`, `compare`, `equals`, and `verify`. See [Migrating from v1](https://github.com/farshidbeheshti/xotp#migrating-from-v1).
