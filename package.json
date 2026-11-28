@@ -1,6 +1,6 @@
 {
   "name": "nestjs-xotp",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "NestJS XOTP - A powerful one-time password (OTP) library for NestJS.",
   "author": "Farshid Beheshti",
   "license": "MIT",
